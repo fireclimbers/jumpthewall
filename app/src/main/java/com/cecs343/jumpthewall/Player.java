@@ -13,15 +13,18 @@ public class Player extends GameObject {
     private boolean playing;
     private Animation animation = new Animation();
     private long startTime;
+    private boolean onGround;
 
-    public Player(Bitmap res, int w, int h, int numFrames) {
-        x = 50;
-        y = GamePanel.gameHeight/2;
+    public Player(Bitmap res, int x, int y, int w, int h, int numFrames) {
+        this.x = x;
+        this.y = y;
         dy = 0;
         score = 0;
         height = h;
         width = w;
         spritesheet = res;
+
+        onGround = false;
 
         Bitmap[] image = new Bitmap[numFrames];
 
@@ -30,7 +33,7 @@ public class Player extends GameObject {
         }
 
         animation.setFrames(image);
-        animation.setDelay(10);
+        animation.setDelay(60);
         startTime = System.nanoTime();
 
     }
@@ -49,7 +52,7 @@ public class Player extends GameObject {
 
         if (up) {
             //dy -=1;
-            dy = -20;
+            dy = -15;
         } else {
             dy +=1;
         }
@@ -57,9 +60,13 @@ public class Player extends GameObject {
         if(dy>14)dy=14;
         if(dy<-14)dy=-14;
 
-        if ((y+height+14 > GamePanel.gameHeight-32) && (!up)) {
+        /*if ((y+height+14 > GamePanel.gameHeight-32) && (!up)) {
             y = GamePanel.gameHeight-height-32;
             dy = 0;
+        }*/
+
+        if (onGround) {
+            dy += 1;
         }
 
         if (up) { setUp(false); }
@@ -74,6 +81,7 @@ public class Player extends GameObject {
     public int getScore(){return score;}
     public boolean getPlaying(){return playing;}
     public void setPlaying(boolean b){playing = b;}
+    public void setOnGround(boolean b) {onGround = b;}
     public void resetDY(){dy = 0;}
     public void resetScore(){score = 0;}
 }

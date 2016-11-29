@@ -1,5 +1,6 @@
 package com.cecs343.jumpthewall;
 
+import android.graphics.Canvas;
 import android.graphics.Rect;
 
 /**
@@ -64,4 +65,8 @@ public abstract class GameObject {
     public Rect getRect() {
         return new Rect(x,y,x+width,y+height);
     }
+
+    abstract public void update();
+
+    abstract public void draw(Canvas canvas);
 }

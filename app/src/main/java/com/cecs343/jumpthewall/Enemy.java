@@ -9,22 +9,17 @@ import java.util.Random;
  * Created by docbot on 11/26/16.
  */
 public class Enemy extends GameObject {
-    private int score;
-    private int speed;
     private Random r = new Random();
     private Animation ani = new Animation();
     private Bitmap spritesheet;
 
-    public Enemy(Bitmap res, int x, int y, int w, int h, int s, int numFrames) {
+    public Enemy(Bitmap res, int x, int y, int w, int h, int numFrames) {
         super.x = x;
         super.y = y;
         width = w;
         height = h;
-        score = s;
 
-        speed = 7 + (int) (r.nextDouble()*score/30);
-
-        if (speed >= 40)speed = 40;
+        dx = -GamePanel.movespeed;
 
         Bitmap[] image = new Bitmap[numFrames];
 
@@ -35,11 +30,11 @@ public class Enemy extends GameObject {
         }
 
         ani.setFrames(image);
-        ani.setDelay(100-speed);
+        ani.setDelay(120);
     }
 
     public void update() {
-        x -= speed;
+        x -= dx;
         ani.update();
     }
 

@@ -14,24 +14,23 @@ import java.util.ArrayList;
 
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private MainThread thread;
-    public static int movespeed = -5;
-    public static int gameWidth;
-    public static int gameHeight;
-    private long enemyStartTime;
+    public static int movespeed = -8;
+    public static int tileSize = 32;
+    public static int gameWidth = 832;
+    public static int gameHeight = 448;
+    public static int mapPart;
     private Background bg;
     private Player player;
+    private MapTrigger mapTrigger;
     private ArrayList<Enemy> enemies;
+    //private long enemyStartTime;
+    private ArrayList<Block> blocks;
+    public int timer;
 
     public GamePanel(Context context) {
         super(context);
 
         //this class is the view that creates all the graphics
-
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeResource(getResources(), R.drawable.youchan, options);
-        gameWidth = options.outWidth;
-        gameHeight = options.outHeight;
 
         getHolder().addCallback(this);
 
@@ -61,11 +60,20 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
         //where all the graphics are created for the first time
 
-        bg = new Background(BitmapFactory.decodeResource(getResources(),R.drawable.youchan), -5);
-        player = new Player(BitmapFactory.decodeResource(getResources(),R.drawable.pinky31f),90,90,31);
+        bg = new Background(R.drawable.newbg, getResources());
         enemies = new ArrayList<>();
-        enemyStartTime = System.nanoTime();
+        blocks = new ArrayList<>();
 
+        mapPart = 0;
+        createMapPart(0,0);
+        /*
+        int blockPlacement = 0;
+        while(blockPlacement < gameWidth) {
+            blocks.add(new Block(BitmapFactory.decodeResource(getResources(),R.drawable.brick),blockPlacement,gameHeight-32,32,32));
+            blockPlacement += 32;
+        }*/
+
+        timer = 0;
         thread = new MainThread(getHolder(), this);
         thread.setRunning(true);
         thread.start();
@@ -80,6 +88,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             if(!player.getPlaying()) {
                 player.setPlaying(true);
             } else {
+                player.setOnGround(false);
                 player.setUp(true);
             }
             return true;
@@ -91,15 +100,59 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         return super.onTouchEvent(event);
     }
 
+    public void createMapPart(int startX, int startY) {
+        if (mapPart == Level1.map.length) {
+            //player.setPlaying(false);
+            //return;
+            mapPart = 0;
+        }
+        for(int i=0;i<Level1.map[mapPart].length;i++) {
+            if (Level1.map[mapPart][i] != 0) {
+                int x = i % (gameWidth/32);
+                int y = i / (gameWidth/32);
+                if (Level1.map[mapPart][i] == 1) {
+                    blocks.add(new Block(BitmapFactory.decodeResource(getResources(),R.drawable.blackblock),startX+x*32,startY+y*32,32,32));
+                }
+                if (Level1.map[mapPart][i] == 2) {
+                    if (player == null)
+                    player = new Player(BitmapFactory.decodeResource(getResources(),R.drawable.pinky31f),startX+x*32,startY+y*32,90,90,31);
+                }
+                if (Level1.map[mapPart][i] == 3) {
+                    enemies.add(new Enemy(BitmapFactory.decodeResource(getResources(), R.drawable.enemy41f), startX+x*32, startY+y*32, 56, 80, 41));
+                }
+            }
+            if (i == Level1.map[mapPart].length-1) {
+                int x = i % (gameWidth/32);
+                int y = i / (gameWidth/32);
+                if (mapTrigger == null)
+                    mapTrigger = new MapTrigger(startX+x*32,startY+y*32);
+                else {
+                    mapTrigger.setX(startX+x*32);
+                    mapTrigger.setY(startY+y*32);
+                }
+
+            }
+        }
+        mapPart++;
+    }
+
     public void update() {
 
         //updates for all game objects here
 
         if(player.getPlaying()) {
+            timer += 1;
+
             bg.update();
             player.update();
+            mapTrigger.update();
+
+            if (mapTrigger.getX() < gameWidth) {
+                createMapPart(mapTrigger.getX()+32,0);
+            }
 
             //as score goes up, enemies will be created at a higher rate
+            /*
             long enemiesElapsed = (System.nanoTime()-enemyStartTime)/1000000;
             if(enemiesElapsed > (2000-player.getScore()/4)) {
                 enemies.add(new Enemy(BitmapFactory.decodeResource(getResources(), R.drawable.enemy41f),
@@ -107,15 +160,19 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                         gameHeight-32-80,
                         56,
                         80,
-                        player.getScore(),
                         41));
 
                 enemyStartTime = System.nanoTime();
-            }
+            }*/
+
+            /*
+            if (b.getX()+b.getWidth() <= gameWidth) {
+                blocks.add(new Block(BitmapFactory.decodeResource(getResources(),R.drawable.brick),b.getX()+b.getWidth(),gameHeight-32,32,32));
+            }*/
 
             for (int i=0;i<enemies.size();i++) {
                 enemies.get(i).update();
-                if(collision(enemies.get(i),player)) {
+                if(collision(enemies.get(i),player) != -1) {
                     enemies.remove(i);
                     player.setPlaying(false);
                     break;
@@ -126,11 +183,50 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 }
             }
 
+            ArrayList<Integer> toBeRemoved = new ArrayList<>();
+            for (int i=0;i<blocks.size();i++) {
+                blocks.get(i).update();
+                //if player is above block
+                int col = collision(blocks.get(i),player);
+                if(col == 0) {
+                    player.setPlaying(false);
+                }
+                if (col == 3) {
+                    player.setOnGround(true);
+                    while(collision(blocks.get(i),player) != -1) {
+                        player.setY(player.y-1);
+                    }
+                    player.setDy(0);
+                }
+                if(blocks.get(i).getX() < -100) {
+                    toBeRemoved.add(i);
+                }
+            }
+            for (int i=toBeRemoved.size()-1;i>=0;i--) {
+                blocks.remove(toBeRemoved.get(i));
+            }
+
         }
     }
 
-    public boolean collision(GameObject a, GameObject b) {
-        return a.getRect().intersect(b.getRect());
+    public int collision(GameObject a, GameObject b) {
+        int dx=(a.x+a.width/2)-(b.x+b.width/2);
+        int dy=(a.y+a.height/2)-(b.y+b.height/2);
+        int width=(a.width+b.width)/2;
+        int height=(a.height+b.height)/2;
+        int crossWidth=width*dy;
+        int crossHeight=height*dx;
+        int collision=-1;
+        //
+        if(Math.abs(dx)<=width && Math.abs(dy)<=height){
+            if(crossWidth>crossHeight){
+                collision=(crossWidth>(-crossHeight))?3:2;
+            }else{
+                collision=(crossWidth>-(crossHeight))?0:1;
+            }
+        }
+        return(collision);
+        //return a.getRect().intersect(b.getRect());
     }
 
     @Override
@@ -147,15 +243,20 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
             bg.draw(canvas);
             player.draw(canvas);
-            /*
+
             Paint p = new Paint();
             p.setColor(Color.RED);
             canvas.drawRect(player.getRect(), p);
-            p.setColor(Color.BLUE);*/
+            p.setColor(Color.BLUE);
 
             for(Enemy e : enemies) {
                 e.draw(canvas);
                 //canvas.drawRect(e.getRect(), p);
+            }
+
+            for(Block b : blocks) {
+                b.draw(canvas);
+                //canvas.drawRect(b.getRect(), p);
             }
 
             canvas.restoreToCount(savedState);

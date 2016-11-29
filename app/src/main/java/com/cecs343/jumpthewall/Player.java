@@ -14,6 +14,7 @@ public class Player extends GameObject {
     private Animation animation = new Animation();
     private long startTime;
     private boolean onGround;
+    private int stompTimer;
 
     public Player(Bitmap res, int x, int y, int w, int h, int numFrames) {
         this.x = x;
@@ -25,6 +26,7 @@ public class Player extends GameObject {
         spritesheet = res;
 
         onGround = false;
+        stompTimer = 0;
 
         Bitmap[] image = new Bitmap[numFrames];
 
@@ -41,8 +43,13 @@ public class Player extends GameObject {
     public void setUp(boolean b) {
         up = b;
     }
+    public boolean getUp() {return up;}
+    public void setStompTimer() {if (stompTimer == 0) stompTimer = 4;}
+    public boolean stompTimerIsOn() {if (stompTimer < 1) return false; return true;}
 
     public void update() {
+        if (stompTimer > 0) {stompTimer--;}
+
         long elapsed = (System.nanoTime()-startTime)/1000000;
         if(elapsed > 100) {
             score++;
@@ -51,8 +58,9 @@ public class Player extends GameObject {
         animation.update();
 
         if (up) {
+            System.out.println("up!!");
             //dy -=1;
-            dy = -15;
+            dy = -9;
         } else {
             dy +=1;
         }
@@ -82,6 +90,7 @@ public class Player extends GameObject {
     public boolean getPlaying(){return playing;}
     public void setPlaying(boolean b){playing = b;}
     public void setOnGround(boolean b) {onGround = b;}
+    public boolean getOnGround() {return onGround;};
     public void resetDY(){dy = 0;}
     public void resetScore(){score = 0;}
 }

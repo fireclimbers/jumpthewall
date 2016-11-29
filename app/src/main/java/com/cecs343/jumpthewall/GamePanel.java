@@ -84,19 +84,21 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
         //touch controls go here
         if(event.getAction()==MotionEvent.ACTION_DOWN) {
-            System.out.println("DOWN");
             if(!player.getPlaying()) {
                 player.setPlaying(true);
-            } else {
+            } else if (player.getOnGround()) {
                 player.setOnGround(false);
                 player.setUp(true);
+            } else {
+                //start 4 frame timer
+                player.setStompTimer();
             }
             return true;
-        }
+        }/*
         if(event.getAction()==MotionEvent.ACTION_UP) {
             player.setUp(false);
             return true;
-        }
+        }*/
         return super.onTouchEvent(event);
     }
 
@@ -169,21 +171,33 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             if (b.getX()+b.getWidth() <= gameWidth) {
                 blocks.add(new Block(BitmapFactory.decodeResource(getResources(),R.drawable.brick),b.getX()+b.getWidth(),gameHeight-32,32,32));
             }*/
-
+            ArrayList<Integer> toBeRemoved = new ArrayList<>();
             for (int i=0;i<enemies.size();i++) {
                 enemies.get(i).update();
-                if(collision(enemies.get(i),player) != -1) {
-                    enemies.remove(i);
+                int col = collision(enemies.get(i),player);
+                if(col == 0) {
                     player.setPlaying(false);
                     break;
                 }
+                if (col == 3) {
+                    //make a small window (4 frames) where player can jump
+                    if (player.stompTimerIsOn()) {
+                        toBeRemoved.add(i);
+                        player.setUp(true);
+                    } else {
+                        player.setPlaying(false);
+                        break;
+                    }
+                }
                 if(enemies.get(i).getX() < -100) {
-                    enemies.remove(i);
-                    break;
+                    toBeRemoved.add(i);
                 }
             }
+            for (int i=toBeRemoved.size()-1;i>=0;i--) {
+                enemies.remove((int)toBeRemoved.get(i));
+            }
 
-            ArrayList<Integer> toBeRemoved = new ArrayList<>();
+            toBeRemoved = new ArrayList<>();
             for (int i=0;i<blocks.size();i++) {
                 blocks.get(i).update();
                 //if player is above block
@@ -202,18 +216,19 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                     toBeRemoved.add(i);
                 }
             }
+
             for (int i=toBeRemoved.size()-1;i>=0;i--) {
-                blocks.remove(toBeRemoved.get(i));
+                blocks.remove((int)toBeRemoved.get(i));
             }
 
         }
     }
 
     public int collision(GameObject a, GameObject b) {
-        int dx=(a.x+a.width/2)-(b.x+b.width/2);
-        int dy=(a.y+a.height/2)-(b.y+b.height/2);
-        int width=(a.width+b.width)/2;
-        int height=(a.height+b.height)/2;
+        int dx=(a.getX()+a.getWidth()/2)-(b.getX()+b.getWidth()/2);
+        int dy=(a.getY()+a.getHeight()/2)-(b.getY()+b.getHeight()/2);
+        int width=(a.getWidth()+b.getWidth())/2;
+        int height=(a.getHeight()+b.getHeight())/2;
         int crossWidth=width*dy;
         int crossHeight=height*dx;
         int collision=-1;
@@ -244,10 +259,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             bg.draw(canvas);
             player.draw(canvas);
 
-            Paint p = new Paint();
+            /*Paint p = new Paint();
             p.setColor(Color.RED);
             canvas.drawRect(player.getRect(), p);
-            p.setColor(Color.BLUE);
+            p.setColor(Color.BLUE);*/
 
             for(Enemy e : enemies) {
                 e.draw(canvas);

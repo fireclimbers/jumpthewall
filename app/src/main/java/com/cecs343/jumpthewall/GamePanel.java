@@ -247,8 +247,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void draw(Canvas canvas) {
 
-        //scales graphics to be size of phone
+        //scales graphics to be size of phone or tablet
         //and then draws all game objects
+
 
         final float scaleFactorX = getWidth()/(gameWidth*1.f);
         final float scaleFactorY = getHeight()/(gameHeight*1.f);

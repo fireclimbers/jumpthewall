@@ -8,7 +8,6 @@ import android.graphics.Canvas;
  */
 public class Player extends GameObject {
     private Bitmap spritesheet;
-    private int score;
     private boolean up;
     private boolean playing;
     private Animation animation = new Animation();
@@ -20,7 +19,6 @@ public class Player extends GameObject {
         this.x = x;
         this.y = y;
         dy = 0;
-        score = 0;
         height = h;
         width = w;
         spritesheet = res;
@@ -50,11 +48,6 @@ public class Player extends GameObject {
     public void update() {
         if (stompTimer > 0) {stompTimer--;}
 
-        long elapsed = (System.nanoTime()-startTime)/1000000;
-        if(elapsed > 100) {
-            score++;
-            startTime = System.nanoTime();
-        }
         animation.update();
 
         if (up) {
@@ -67,11 +60,6 @@ public class Player extends GameObject {
 
         if(dy>14)dy=14;
         if(dy<-14)dy=-14;
-
-        /*if ((y+height+14 > GamePanel.gameHeight-32) && (!up)) {
-            y = GamePanel.gameHeight-height-32;
-            dy = 0;
-        }*/
 
         if (onGround) {
             dy += 1;
@@ -86,11 +74,8 @@ public class Player extends GameObject {
         canvas.drawBitmap(animation.getImage(),x,y,null);
     }
 
-    public int getScore(){return score;}
     public boolean getPlaying(){return playing;}
     public void setPlaying(boolean b){playing = b;}
     public void setOnGround(boolean b) {onGround = b;}
-    public boolean getOnGround() {return onGround;};
-    public void resetDY(){dy = 0;}
-    public void resetScore(){score = 0;}
+    public boolean getOnGround() {return onGround;}
 }

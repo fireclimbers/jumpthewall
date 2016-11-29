@@ -53,9 +53,9 @@ public class Enemy extends GameObject {
     public int getX() { return x+10; }
 
     @Override
-    public int getHeight() { return height-15; }
+    public int getHeight() { return height-20; }
 
     @Override
-    public int getY() { return y+15; }
+    public int getY() { return y+20; }
 
 }

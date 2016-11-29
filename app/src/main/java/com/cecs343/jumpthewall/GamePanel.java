@@ -66,12 +66,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
         mapPart = 0;
         createMapPart(0,0);
-        /*
-        int blockPlacement = 0;
-        while(blockPlacement < gameWidth) {
-            blocks.add(new Block(BitmapFactory.decodeResource(getResources(),R.drawable.brick),blockPlacement,gameHeight-32,32,32));
-            blockPlacement += 32;
-        }*/
 
         timer = 0;
         thread = new MainThread(getHolder(), this);
@@ -153,24 +147,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 createMapPart(mapTrigger.getX()+32,0);
             }
 
-            //as score goes up, enemies will be created at a higher rate
-            /*
-            long enemiesElapsed = (System.nanoTime()-enemyStartTime)/1000000;
-            if(enemiesElapsed > (2000-player.getScore()/4)) {
-                enemies.add(new Enemy(BitmapFactory.decodeResource(getResources(), R.drawable.enemy41f),
-                        gameWidth + 10,
-                        gameHeight-32-80,
-                        56,
-                        80,
-                        41));
-
-                enemyStartTime = System.nanoTime();
-            }*/
-
-            /*
-            if (b.getX()+b.getWidth() <= gameWidth) {
-                blocks.add(new Block(BitmapFactory.decodeResource(getResources(),R.drawable.brick),b.getX()+b.getWidth(),gameHeight-32,32,32));
-            }*/
             ArrayList<Integer> toBeRemoved = new ArrayList<>();
             for (int i=0;i<enemies.size();i++) {
                 enemies.get(i).update();

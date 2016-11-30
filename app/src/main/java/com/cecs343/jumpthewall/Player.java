@@ -48,23 +48,23 @@ public class Player extends GameObject {
 
         if (up) {
             //jump height
-            dy = -7;
+            dy = -14;
         } else {
             //gravity
-            dy +=0.7;
+            dy +=1.4;
         }
 
         //
-        if(dy>14)dy=14;
-        if(dy<-14)dy=-14;
-
+        if(dy>28)dy=28;
+        if(dy<-28)dy=-28;
+        /*
         if (onGround) {
             dy += 1;
-        }
+        }*/
 
         if (up) { setUp(false); }
 
-        y+=dy*2;
+        y+=dy;
     }
 
     public void draw(Canvas canvas) {

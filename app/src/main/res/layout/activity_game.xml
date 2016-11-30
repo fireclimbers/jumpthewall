@@ -30,7 +30,7 @@
         android:layout_centerHorizontal="true" />
 
     <TextView
-        android:text="The Jump Wall"
+        android:text="Jump the Wall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="14dp"

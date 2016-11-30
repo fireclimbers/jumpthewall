@@ -11,10 +11,13 @@ public class Player extends GameObject {
     private boolean up;
     private boolean playing;
     private Animation animation = new Animation();
-    private long startTime;
     private boolean onGround;
     private int stompTimer;
     private int attackTimer;
+    private int stompWindow = 4;
+    private int stompCooldown = 8;
+    private int attackWindow = 6;
+    private int attackCooldown = 8;
 
     public Player(Bitmap res, int x, int y, int w, int h, int numFrames) {
         this.x = x;
@@ -36,13 +39,12 @@ public class Player extends GameObject {
 
         animation.setFrames(image);
         animation.setDelay(60);
-        startTime = System.nanoTime();
 
     }
 
     public void update() {
-        if (stompTimer > 0) {stompTimer--;}
-        if (attackTimer > -16) {attackTimer--;}
+        if (stompTimer > -stompCooldown) {stompTimer--;}
+        if (attackTimer > -attackCooldown) {attackTimer--;}
 
         animation.update();
 
@@ -54,13 +56,8 @@ public class Player extends GameObject {
             dy +=1.4;
         }
 
-        //
         if(dy>28)dy=28;
         if(dy<-28)dy=-28;
-        /*
-        if (onGround) {
-            dy += 1;
-        }*/
 
         if (up) { setUp(false); }
 
@@ -79,8 +76,8 @@ public class Player extends GameObject {
         up = b;
     }
     public boolean getUp() {return up;}
-    public void setStompTimer() {if (stompTimer == 0) stompTimer = 4;}
+    public void setStompTimer() {if (stompTimer == -stompCooldown) stompTimer = stompWindow;}
     public boolean stompTimerIsOn() {return (stompTimer > 0);}
-    public void setAttackTimer() {if (attackTimer == -16) attackTimer = 3;}
+    public void setAttackTimer() {if (attackTimer == -attackCooldown) attackTimer = attackWindow;}
     public boolean attackTimerIsOn() {return (attackTimer > 0);}
 }

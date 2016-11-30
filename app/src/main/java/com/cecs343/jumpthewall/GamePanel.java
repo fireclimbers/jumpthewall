@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.media.MediaPlayer;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -26,6 +27,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     //private long enemyStartTime;
     private ArrayList<Block> blocks;
     public int timer;
+
 
     public GamePanel(Context context) {
         super(context);

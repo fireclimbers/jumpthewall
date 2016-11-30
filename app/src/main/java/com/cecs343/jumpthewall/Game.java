@@ -8,6 +8,13 @@ import android.view.WindowManager;
 
 public class Game extends AppCompatActivity {
 
+    MediaPlayer mySong1;
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mySong1.release();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,5 +25,7 @@ public class Game extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(new GamePanel(this));
 
+        mySong1 = MediaPlayer.create(this,R.raw.song1);
+        mySong1.start();
     }
 }

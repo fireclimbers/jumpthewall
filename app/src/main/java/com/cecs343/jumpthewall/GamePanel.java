@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private MainThread thread;
-    public static int movespeed = -8;
+    public static int movespeed = -16;
     public static int tileSize = 32;
     public static int gameWidth = 832;
     public static int gameHeight = 448;
@@ -77,9 +77,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-
         //touch controls go here
+        //jump on right
+        //attack on left
         if(event.getAction()==MotionEvent.ACTION_DOWN) {
+            //System.out.println(event.getX());
+            //System.out.println(event.getY());
             if(!player.getPlaying()) {
                 player.setPlaying(true);
             } else if (player.getOnGround()) {

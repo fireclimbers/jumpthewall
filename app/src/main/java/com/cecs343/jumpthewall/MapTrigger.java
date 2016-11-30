@@ -20,7 +20,5 @@ public class MapTrigger extends GameObject {
         x += dx;
     }
 
-    public void draw(Canvas canvas) {
-
-    }
+    public void draw(Canvas canvas) {}
 }

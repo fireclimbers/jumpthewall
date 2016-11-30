@@ -14,6 +14,7 @@ public class Player extends GameObject {
     private long startTime;
     private boolean onGround;
     private int stompTimer;
+    private int attackTimer;
 
     public Player(Bitmap res, int x, int y, int w, int h, int numFrames) {
         this.x = x;
@@ -25,6 +26,7 @@ public class Player extends GameObject {
 
         onGround = false;
         stompTimer = 0;
+        attackTimer = 0;
 
         Bitmap[] image = new Bitmap[numFrames];
 
@@ -38,26 +40,21 @@ public class Player extends GameObject {
 
     }
 
-    public void setUp(boolean b) {
-        up = b;
-    }
-    public boolean getUp() {return up;}
-    public void setStompTimer() {if (stompTimer == 0) stompTimer = 4;}
-    public boolean stompTimerIsOn() {if (stompTimer < 1) return false; return true;}
-
     public void update() {
         if (stompTimer > 0) {stompTimer--;}
+        if (attackTimer > -16) {attackTimer--;}
 
         animation.update();
 
         if (up) {
-            System.out.println("up!!");
-            //dy -=1;
-            dy = -9;
+            //jump height
+            dy = -7;
         } else {
-            dy +=1;
+            //gravity
+            dy +=0.7;
         }
 
+        //
         if(dy>14)dy=14;
         if(dy<-14)dy=-14;
 
@@ -78,4 +75,12 @@ public class Player extends GameObject {
     public void setPlaying(boolean b){playing = b;}
     public void setOnGround(boolean b) {onGround = b;}
     public boolean getOnGround() {return onGround;}
+    public void setUp(boolean b) {
+        up = b;
+    }
+    public boolean getUp() {return up;}
+    public void setStompTimer() {if (stompTimer == 0) stompTimer = 4;}
+    public boolean stompTimerIsOn() {return (stompTimer > 0);}
+    public void setAttackTimer() {if (attackTimer == -16) attackTimer = 3;}
+    public boolean attackTimerIsOn() {return (attackTimer > 0);}
 }

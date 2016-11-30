@@ -63,7 +63,7 @@ public abstract class GameObject {
     }
 
     public Rect getRect() {
-        return new Rect((int)getX(),(int)getY(),(int)getX()+getWidth(),(int)getY()+getHeight());
+        return new Rect((int)x,(int)y,(int)x+width,(int)y+height);
     }
 
     abstract public void update();

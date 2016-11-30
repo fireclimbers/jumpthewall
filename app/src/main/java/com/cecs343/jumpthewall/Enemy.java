@@ -2,16 +2,16 @@ package com.cecs343.jumpthewall;
 
 import  android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 
-import java.util.Random;
 
 /**
  * Created by docbot on 11/26/16.
  */
 public class Enemy extends GameObject {
-    private Random r = new Random();
     private Animation ani = new Animation();
     private Bitmap spritesheet;
+    private boolean obeyGravity;
 
     public Enemy(Bitmap res, int x, int y, int w, int h, int numFrames) {
         super.x = x;
@@ -19,7 +19,8 @@ public class Enemy extends GameObject {
         width = w;
         height = h;
 
-        dx = -GamePanel.movespeed;
+        obeyGravity = true;
+        dx = GamePanel.movespeed;
 
         Bitmap[] image = new Bitmap[numFrames];
 
@@ -34,7 +35,11 @@ public class Enemy extends GameObject {
     }
 
     public void update() {
-        x -= dx;
+        if (obeyGravity) {
+            dy += 1;
+        }
+        x += dx;
+        y += dy;
         ani.update();
     }
 
@@ -44,18 +49,7 @@ public class Enemy extends GameObject {
         }catch (Exception e){}
     }
 
-    @Override
-    public int getWidth() {
-        return width-20;
-    }
-
-    @Override
-    public double getX() { return x+10; }
-
-    @Override
-    public int getHeight() { return height-20; }
-
-    @Override
-    public double getY() { return y+20; }
+    public boolean isObeyGravity() { return obeyGravity; }
+    public void setObeyGravity(boolean b) {obeyGravity = b; }
 
 }

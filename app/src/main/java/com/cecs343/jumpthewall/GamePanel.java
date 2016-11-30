@@ -12,6 +12,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private MainThread thread;
@@ -24,9 +25,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private Player player;
     private MapTrigger mapTrigger;
     private ArrayList<Enemy> enemies;
-    //private long enemyStartTime;
     private ArrayList<Block> blocks;
     public int timer;
+    Random rand = new Random();
+    
+    int randbg = rand.nextInt(4);
+    int randblock = rand.nextInt(2);
 
 
     public GamePanel(Context context) {
@@ -59,10 +63,37 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(SurfaceHolder holder){
+        //int randbg = rand.nextInt(4);
+
+        // Generate random background to use
+        if(randbg == 0)
+        {
+            bg = new Background(R.drawable.newbg, getResources());
+        }
+
+        if(randbg == 1)
+        {
+            bg = new Background(R.drawable.newbg1, getResources());
+        }
+
+        if(randbg == 2)
+        {
+            bg = new Background(R.drawable.newbg2, getResources());
+        }
+
+        if(randbg == 3)
+        {
+            bg = new Background(R.drawable.newbg3, getResources());
+        }
+
+        if(randbg == 4)
+        {
+            bg = new Background(R.drawable.newbg4, getResources());
+        }
 
         //where all the graphics are created for the first time
 
-        bg = new Background(R.drawable.newbg, getResources());
+        //bg = new Background(R.drawable.newbg, getResources());
         enemies = new ArrayList<>();
         blocks = new ArrayList<>();
 
@@ -81,23 +112,26 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         //jump on right
         //attack on left
         if(event.getAction()==MotionEvent.ACTION_DOWN) {
-            //System.out.println(event.getX());
-            //System.out.println(event.getY());
-            if(!player.getPlaying()) {
-                player.setPlaying(true);
-            } else if (player.getOnGround()) {
-                player.setOnGround(false);
-                player.setUp(true);
+            if (event.getX() > getWidth()/2) {
+                if(!player.getPlaying()) {
+                    player.setPlaying(true);
+                } else if (player.getOnGround()) {
+                    player.setOnGround(false);
+                    player.setUp(true);
+                } else {
+                    //start 4 frame timer
+                    player.setStompTimer();
+                }
             } else {
-                //start 4 frame timer
-                player.setStompTimer();
+                if(!player.getPlaying()) {
+                    player.setPlaying(true);
+                } else {
+                    player.setAttackTimer();
+                }
             }
+
             return true;
-        }/*
-        if(event.getAction()==MotionEvent.ACTION_UP) {
-            player.setUp(false);
-            return true;
-        }*/
+        }
         return super.onTouchEvent(event);
     }
 
@@ -111,15 +145,36 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             if (Level1.map[mapPart][i] != 0) {
                 int x = i % (gameWidth/32);
                 int y = i / (gameWidth/32);
-                if (Level1.map[mapPart][i] == 1) {
-                    blocks.add(new Block(BitmapFactory.decodeResource(getResources(),R.drawable.blackblock),startX+x*32,startY+y*32,32,32));
+                if (Level1.map[mapPart][i] == 1)
+                {
+                    //int randblock = rand.nextInt(2);
+
+                    if(randblock == 0)
+                    {
+                        blocks.add(new Block(BitmapFactory.decodeResource(getResources(), R.drawable.brick), startX + x * 32, startY + y * 32, 32, 32));
+                    }
+
+                    if(randblock == 1)
+                    {
+                        blocks.add(new Block(BitmapFactory.decodeResource(getResources(), R.drawable.brick1), startX + x * 32, startY + y * 32, 32, 32));
+                    }
+
+                    if(randblock == 2)
+                    {
+                        blocks.add(new Block(BitmapFactory.decodeResource(getResources(), R.drawable.brick2), startX + x * 32, startY + y * 32, 32, 32));
+                    }
+
                 }
-                if (Level1.map[mapPart][i] == 2) {
+                if (Level1.map[mapPart][i] == 2)
+                {
                     if (player == null)
                     player = new Player(BitmapFactory.decodeResource(getResources(),R.drawable.pinky31f),startX+x*32,startY+y*32,90,90,31);
                 }
                 if (Level1.map[mapPart][i] == 3) {
-                    enemies.add(new Enemy(BitmapFactory.decodeResource(getResources(), R.drawable.enemy41f), startX+x*32, startY+y*32, 56, 80, 41));
+                    enemies.add(new StationaryEnemy(BitmapFactory.decodeResource(getResources(), R.drawable.chomper8f), startX+x*32, startY+y*32, 52, 56, 8));
+                }
+                if (Level1.map[mapPart][i] == 4) {
+                    enemies.add(new PitEnemy(BitmapFactory.decodeResource(getResources(), R.drawable.eye16f), startX+x*32, gameHeight, 40, 78, 16));
                 }
             }
             if (i == Level1.map[mapPart].length-1) {
@@ -157,8 +212,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 enemies.get(i).update();
                 int col = collision(enemies.get(i),player);
                 if(col == 0) {
-                    player.setPlaying(false);
-                    break;
+                    if (player.attackTimerIsOn()) {
+                        toBeRemoved.add(i);
+                    } else {
+                        player.setPlaying(false);
+                        break;
+                    }
                 }
                 if (col == 3) {
                     //make a small window (4 frames) where player can jump
@@ -179,6 +238,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             }
 
             toBeRemoved = new ArrayList<>();
+            player.setOnGround(false);
             for (int i=0;i<blocks.size();i++) {
                 blocks.get(i).update();
                 //if player is above block
@@ -193,6 +253,18 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                     }
                     player.setDy(0);
                 }
+                for (Enemy e : enemies) {
+                    if (e.isObeyGravity()) {
+                        int eCol = collision(blocks.get(i),e);
+                        if (eCol == 3) {
+                            while(collision(blocks.get(i),e) != -1) {
+                                e.setY(e.getY()-1);
+                            }
+                            e.setDy(0);
+                        }
+                    }
+                }
+
                 if(blocks.get(i).getX() < -100) {
                     toBeRemoved.add(i);
                 }
@@ -205,11 +277,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
-    public int collision(GameObject a, GameObject b) {
-        int dx=((int)a.getX()+a.getWidth()/2)-((int)b.getX()+b.getWidth()/2);
-        int dy=((int)a.getY()+a.getHeight()/2)-((int)b.getY()+b.getHeight()/2);
-        int width=(a.getWidth()+b.getWidth())/2;
-        int height=(a.getHeight()+b.getHeight())/2;
+    public int collision(GameObject aa, GameObject bb) {
+        Rect aRect = aa.getRect();
+        Rect bRect = bb.getRect();
+
+        int dx=((int)aRect.left+aRect.width()/2)-((int)bRect.left+bRect.width()/2);
+        int dy=((int)aRect.top+aRect.height()/2)-((int)bRect.top+bRect.height()/2);
+        int width=(aRect.width()+bRect.width())/2;
+        int height=(aRect.height()+bRect.height())/2;
         int crossWidth=width*dy;
         int crossHeight=height*dx;
         int collision=-1;
@@ -238,23 +313,33 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             final int savedState = canvas.save();
             canvas.scale(scaleFactorX, scaleFactorY);
 
+            Paint p = new Paint();
+            p.setStyle(Paint.Style.STROKE);
+            p.setStrokeWidth(2);
+
             bg.draw(canvas);
-            player.draw(canvas);
-
-            /*Paint p = new Paint();
-            p.setColor(Color.RED);
-            canvas.drawRect(player.getRect(), p);
-            p.setColor(Color.BLUE);*/
-
-            for(Enemy e : enemies) {
-                e.draw(canvas);
-                //canvas.drawRect(e.getRect(), p);
-            }
-
             for(Block b : blocks) {
                 b.draw(canvas);
                 //canvas.drawRect(b.getRect(), p);
             }
+
+            player.draw(canvas);
+
+            if (player.attackTimerIsOn()) {
+                p.setColor(Color.RED);
+            } else {
+                p.setColor(Color.GREEN);
+            }
+
+            canvas.drawRect(player.getRect(), p);
+            p.setColor(Color.BLUE);
+
+            for(Enemy e : enemies) {
+                e.draw(canvas);
+                canvas.drawRect(e.getRect(), p);
+            }
+
+
 
             canvas.restoreToCount(savedState);
         }

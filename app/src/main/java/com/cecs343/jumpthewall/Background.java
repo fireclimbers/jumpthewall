@@ -28,9 +28,9 @@ public class Background extends GameObject {
     }
 
     public void draw(Canvas canvas) {
-        canvas.drawBitmap(image,x,y,null);
+        canvas.drawBitmap(image,(int)x,(int)y,null);
         if (x<-width+GamePanel.gameWidth) {
-            canvas.drawBitmap(image,x+width,y,null);
+            canvas.drawBitmap(image,(int)x+width,(int)y,null);
         }
     }
 

@@ -7,42 +7,42 @@ import android.graphics.Rect;
  * Created by docbot on 11/26/16.
  */
 public abstract class GameObject {
-    protected int x;
-    protected int y;
-    protected int dx;
-    protected int dy;
+    protected double x;
+    protected double y;
+    protected double dx;
+    protected double dy;
     protected int width;
     protected int height;
 
-    public int getX() {
+    public double getX() {
         return x;
     }
 
-    public void setX(int x) {
+    public void setX(double x) {
         this.x = x;
     }
 
-    public int getY() {
+    public double getY() {
         return y;
     }
 
-    public void setY(int y) {
+    public void setY(double y) {
         this.y = y;
     }
 
-    public int getDx() {
+    public double getDx() {
         return dx;
     }
 
-    public void setDx(int dx) {
+    public void setDx(double dx) {
         this.dx = dx;
     }
 
-    public int getDy() {
+    public double getDy() {
         return dy;
     }
 
-    public void setDy(int dy) {
+    public void setDy(double dy) {
         this.dy = dy;
     }
 
@@ -63,7 +63,7 @@ public abstract class GameObject {
     }
 
     public Rect getRect() {
-        return new Rect(getX(),getY(),getX()+getWidth(),getY()+getHeight());
+        return new Rect((int)getX(),(int)getY(),(int)getX()+getWidth(),(int)getY()+getHeight());
     }
 
     abstract public void update();

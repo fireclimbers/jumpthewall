@@ -40,7 +40,7 @@ public class Enemy extends GameObject {
 
     public void draw(Canvas canvas) {
         try{
-            canvas.drawBitmap(ani.getImage(),x,y,null);
+            canvas.drawBitmap(ani.getImage(),(int)x,(int)y,null);
         }catch (Exception e){}
     }
 
@@ -50,12 +50,12 @@ public class Enemy extends GameObject {
     }
 
     @Override
-    public int getX() { return x+10; }
+    public double getX() { return x+10; }
 
     @Override
     public int getHeight() { return height-20; }
 
     @Override
-    public int getY() { return y+20; }
+    public double getY() { return y+20; }
 
 }

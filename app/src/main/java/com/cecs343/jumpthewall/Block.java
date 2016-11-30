@@ -24,6 +24,6 @@ public class Block extends GameObject {
     }
 
     public void draw(Canvas canvas) {
-        canvas.drawBitmap(image,x,y,null);
+        canvas.drawBitmap(image,(int)x,(int)y,null);
     }
 }

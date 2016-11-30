@@ -144,7 +144,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             mapTrigger.update();
 
             if (mapTrigger.getX() < gameWidth) {
-                createMapPart(mapTrigger.getX()+32,0);
+                createMapPart((int)mapTrigger.getX()+32,0);
             }
 
             ArrayList<Integer> toBeRemoved = new ArrayList<>();
@@ -184,7 +184,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 if (col == 3) {
                     player.setOnGround(true);
                     while(collision(blocks.get(i),player) != -1) {
-                        player.setY(player.y-1);
+                        player.setY(player.getY()-1);
                     }
                     player.setDy(0);
                 }
@@ -201,8 +201,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public int collision(GameObject a, GameObject b) {
-        int dx=(a.getX()+a.getWidth()/2)-(b.getX()+b.getWidth()/2);
-        int dy=(a.getY()+a.getHeight()/2)-(b.getY()+b.getHeight()/2);
+        int dx=((int)a.getX()+a.getWidth()/2)-((int)b.getX()+b.getWidth()/2);
+        int dy=((int)a.getY()+a.getHeight()/2)-((int)b.getY()+b.getHeight()/2);
         int width=(a.getWidth()+b.getWidth())/2;
         int height=(a.getHeight()+b.getHeight())/2;
         int crossWidth=width*dy;

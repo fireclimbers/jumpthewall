@@ -12,7 +12,11 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import java.util.ArrayList;
+<<<<<<< Updated upstream
 import java.util.logging.Level;
+=======
+import java.util.Random;
+>>>>>>> Stashed changes
 
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private MainThread thread;
@@ -27,6 +31,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private ArrayList<Enemy> enemies;
     private ArrayList<Block> blocks;
     public int timer;
+    Random rand = new Random();
+    
+    int randbg = rand.nextInt(4);
+    int randblock = rand.nextInt(2);
 
 
     public GamePanel(Context context) {
@@ -59,10 +67,37 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(SurfaceHolder holder){
+        //int randbg = rand.nextInt(4);
+
+        // Generate random background to use
+        if(randbg == 0)
+        {
+            bg = new Background(R.drawable.newbg, getResources());
+        }
+
+        if(randbg == 1)
+        {
+            bg = new Background(R.drawable.newbg1, getResources());
+        }
+
+        if(randbg == 2)
+        {
+            bg = new Background(R.drawable.newbg2, getResources());
+        }
+
+        if(randbg == 3)
+        {
+            bg = new Background(R.drawable.newbg3, getResources());
+        }
+
+        if(randbg == 4)
+        {
+            bg = new Background(R.drawable.newbg4, getResources());
+        }
 
         //where all the graphics are created for the first time
 
-        bg = new Background(R.drawable.newbg, getResources());
+        //bg = new Background(R.drawable.newbg, getResources());
         enemies = new ArrayList<>();
         blocks = new ArrayList<>();
 
@@ -114,18 +149,42 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             if (Level1.map[mapPart][i] != 0) {
                 int x = i % (gameWidth/32);
                 int y = i / (gameWidth/32);
-                if (Level1.map[mapPart][i] == 1) {
-                    blocks.add(new Block(BitmapFactory.decodeResource(getResources(),R.drawable.blackblock),startX+x*32,startY+y*32,32,32));
+                if (Level1.map[mapPart][i] == 1)
+                {
+                    //int randblock = rand.nextInt(2);
+
+                    if(randblock == 0)
+                    {
+                        blocks.add(new Block(BitmapFactory.decodeResource(getResources(), R.drawable.brick), startX + x * 32, startY + y * 32, 32, 32));
+                    }
+
+                    if(randblock == 1)
+                    {
+                        blocks.add(new Block(BitmapFactory.decodeResource(getResources(), R.drawable.brick1), startX + x * 32, startY + y * 32, 32, 32));
+                    }
+
+                    if(randblock == 2)
+                    {
+                        blocks.add(new Block(BitmapFactory.decodeResource(getResources(), R.drawable.brick2), startX + x * 32, startY + y * 32, 32, 32));
+                    }
+
                 }
-                if (Level1.map[mapPart][i] == 2) {
+                if (Level1.map[mapPart][i] == 2)
+                {
                     if (player == null)
                     player = new Player(BitmapFactory.decodeResource(getResources(),R.drawable.pinky31f),startX+x*32,startY+y*32,90,90,31);
                 }
+<<<<<<< Updated upstream
                 if (Level1.map[mapPart][i] == 3) {
                     enemies.add(new StationaryEnemy(BitmapFactory.decodeResource(getResources(), R.drawable.chomper8f), startX+x*32, startY+y*32, 52, 56, 8));
                 }
                 if (Level1.map[mapPart][i] == 4) {
                     enemies.add(new PitEnemy(BitmapFactory.decodeResource(getResources(), R.drawable.eye16f), startX+x*32, gameHeight, 40, 78, 16));
+=======
+                if (Level1.map[mapPart][i] == 3)
+                {
+                    enemies.add(new Enemy(BitmapFactory.decodeResource(getResources(), R.drawable.enemy41f), startX+x*32, startY+y*32, 56, 80, 41));
+>>>>>>> Stashed changes
                 }
             }
             if (i == Level1.map[mapPart].length-1) {

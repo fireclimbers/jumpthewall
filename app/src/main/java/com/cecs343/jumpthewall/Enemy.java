@@ -1,6 +1,6 @@
 package com.cecs343.jumpthewall;
 
-import android.graphics.Bitmap;
+import  android.graphics.Bitmap;
 import android.graphics.Canvas;
 
 import java.util.Random;

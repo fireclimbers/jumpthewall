@@ -12,11 +12,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import java.util.ArrayList;
-<<<<<<< Updated upstream
-import java.util.logging.Level;
-=======
 import java.util.Random;
->>>>>>> Stashed changes
 
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private MainThread thread;
@@ -174,17 +170,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                     if (player == null)
                     player = new Player(BitmapFactory.decodeResource(getResources(),R.drawable.pinky31f),startX+x*32,startY+y*32,90,90,31);
                 }
-<<<<<<< Updated upstream
                 if (Level1.map[mapPart][i] == 3) {
                     enemies.add(new StationaryEnemy(BitmapFactory.decodeResource(getResources(), R.drawable.chomper8f), startX+x*32, startY+y*32, 52, 56, 8));
                 }
                 if (Level1.map[mapPart][i] == 4) {
                     enemies.add(new PitEnemy(BitmapFactory.decodeResource(getResources(), R.drawable.eye16f), startX+x*32, gameHeight, 40, 78, 16));
-=======
-                if (Level1.map[mapPart][i] == 3)
-                {
-                    enemies.add(new Enemy(BitmapFactory.decodeResource(getResources(), R.drawable.enemy41f), startX+x*32, startY+y*32, 56, 80, 41));
->>>>>>> Stashed changes
                 }
             }
             if (i == Level1.map[mapPart].length-1) {

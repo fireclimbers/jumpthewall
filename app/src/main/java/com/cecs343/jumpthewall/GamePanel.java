@@ -135,7 +135,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         //attack on left
         if(event.getAction()==MotionEvent.ACTION_DOWN) {
             if (!player.getPlaying()) {
-                player.setPlaying(true);
+                //player.setPlaying(true);
+                newGame();
             } else if (player.getPlaying()) {
                 if (event.getX() > getWidth()/2) {
                     if (player.getOnGround()) {
@@ -156,7 +157,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void newGame() {
-        player = new Player(64,256,64,112,getResources());
         enemies.clear();
         blocks.clear();
         sparks.clear();
@@ -164,7 +164,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         timer = 0;
         mapPart = 0;
         createMapPart(0,0);
-
+        player = new Player(64,256,64,112,getResources());
     }
 
     public void createMapPart(int startX, int startY) {
@@ -208,12 +208,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             if (i == AllMaps.level1[mapPart].length-1) {
                 int x = i % (gameWidth*numScreens/32);
                 int y = i / (gameWidth*numScreens/32);
-                if (mapTrigger == null)
+                //if (mapTrigger == null)
                     mapTrigger = new MapTrigger(startX+x*32,startY+y*32);
-                else {
-                    mapTrigger.setX(startX+x*32);
-                    mapTrigger.setY(startY+y*32);
-                }
+                //else {
+                //    mapTrigger.setX(startX+x*32);
+                //    mapTrigger.setY(startY+y*32);
+                //}
 
             }
         }
@@ -311,6 +311,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
             for (int i=toBeRemoved.size()-1;i>=0;i--) {
                 blocks.remove((int)toBeRemoved.get(i));
+            }
+
+            if (player.getY() > gameHeight+40) {
+                player.setPlaying(false);
             }
 
             if (!player.getPlaying()) {

@@ -23,6 +23,7 @@ public class Player extends GameObject {
     private int stompCooldown = 8;
     private int attackWindow = 8; //# of frames attack is + 1
     private int attackCooldown = 4;
+    private int timer;
 
     public Player(int x, int y, int w, int h, Resources r) {
         this.x = x;
@@ -34,7 +35,8 @@ public class Player extends GameObject {
         onGround = false;
         stompTimer = 0;
         attackTimer = 0;
-        playing = true;
+        timer = 0;
+        //playing = true;
 
         runAnimation.setFrames(getFrames(R.drawable.walking_strip10,108,114,10,r));
         runAnimation.setDelay(60);
@@ -50,6 +52,7 @@ public class Player extends GameObject {
     }
 
     public void update() {
+        timer++;
         if (stompTimer > -stompCooldown) {stompTimer--;}
         if (attackTimer > -attackCooldown) {attackTimer--;}
 
@@ -106,7 +109,7 @@ public class Player extends GameObject {
     }
 
     public void draw(Canvas canvas) {
-        if (!playing) {
+        if (!playing && timer > 0) {
             canvas.drawBitmap(dieAnimation.getImage(),(int)x+dieAnimation.getOffsetX(),(int)y+dieAnimation.getOffsetY(),null);
         } else if (attackTimerIsOn()) {
             canvas.drawBitmap(attackAnimation.getImage(),(int)x+attackAnimation.getOffsetX(),(int)y+attackAnimation.getOffsetY(),null);
@@ -125,6 +128,7 @@ public class Player extends GameObject {
         return new Rect(0,0,0,0);
     }
 
+    public int getTimer() { return timer; }
     public boolean getPlaying(){return playing;}
     public void setPlaying(boolean b){playing = b;}
     public void setOnGround(boolean b) {onGround = b;}

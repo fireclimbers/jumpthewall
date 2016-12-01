@@ -22,15 +22,34 @@ public class PitEnemy extends Enemy {
     }
 
     public void update() {
+        super.update();
+
         if (getX() < GamePanel.gameWidth && !hasJumped) {
-            dy = -36;
+            //dy = -36;
             hasJumped = true;
         }
 
         if (hasJumped) {
-            dy += 1.5;
+            //dy += 1.5;
+            int topOffset = 64;
+            int leftOffset = 64;
+            int c = GamePanel.gameHeight-topOffset;
+            int xx = (GamePanel.gameWidth-leftOffset)/2;
+            double a = c/(Math.pow(xx,2));
+            double currentX = x-xx-leftOffset;
+            double currentY = -a*Math.pow(currentX,2) + c;
+            y = GamePanel.gameHeight-currentY;
         }
-        super.update();
+
+        //parabola
+        //-ax^2 + c = 0
+        //a = c/x^2
+        //x = distance/2
+        //c = max height
+        //use -ax^2 + c = y to find y
+
+
+
     }
 
     public void draw(Canvas canvas) {

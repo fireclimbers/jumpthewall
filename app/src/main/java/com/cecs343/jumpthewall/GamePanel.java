@@ -28,7 +28,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private ArrayList<Enemy> enemies;
     private ArrayList<Block> blocks;
     private ArrayList<Spark> sparks;
-    public int timer;
+    //public int timer;
 
     MediaPlayer mySong;
 
@@ -122,7 +122,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         mapPart = 0;
         createMapPart(0,0);
 
-        timer = 0;
+        //timer = 0;
         thread = new MainThread(getHolder(), this);
         thread.setRunning(true);
         thread.start();
@@ -134,9 +134,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         //jump on right
         //attack on left
         if(event.getAction()==MotionEvent.ACTION_DOWN) {
-            if (!player.getPlaying()) {
+            if (!player.getPlaying() && player.getTimer() > 0) {
                 //player.setPlaying(true);
                 newGame();
+            } else if (!player.getPlaying() && player.getTimer() == 0) {
+                player.setPlaying(true);
             } else if (player.getPlaying()) {
                 if (event.getX() > getWidth()/2) {
                     if (player.getOnGround()) {
@@ -161,10 +163,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         blocks.clear();
         sparks.clear();
 
-        timer = 0;
         mapPart = 0;
         createMapPart(0,0);
         player = new Player(64,256,64,112,getResources());
+        //player.setPlaying(true);
     }
 
     public void createMapPart(int startX, int startY) {
@@ -225,8 +227,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         //updates for all game objects here
 
         if(player.getPlaying()) {
-            timer += 1;
-
             bg.update();
             player.update();
             mapTrigger.update();
@@ -317,10 +317,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 player.setPlaying(false);
             }
 
-            if (!player.getPlaying()) {
+            if (!player.getPlaying() && player.getTimer() > 0) {
                 player.setDeathAni();
             }
-        } else {
+        } else if (player.getTimer() > 0) {
             //do death animation, restart after animation ends
             player.updateDeath();
 
@@ -404,13 +404,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 p.setColor(Color.GREEN);
             }
 
-            canvas.drawRect(player.getRect(), p);
-            canvas.drawRect(player.getAttackHitbox(), p);
+            //canvas.drawRect(player.getRect(), p);
+            //canvas.drawRect(player.getAttackHitbox(), p);
             p.setColor(Color.BLUE);
 
             for(Enemy e : enemies) {
                 e.draw(canvas);
-                canvas.drawRect(e.getRect(), p);
+                //canvas.drawRect(e.getRect(), p);
             }
 
             for(Spark s : sparks) {

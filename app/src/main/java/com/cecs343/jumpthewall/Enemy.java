@@ -43,6 +43,10 @@ public class Enemy extends GameObject {
         ani.update();
     }
 
+    public void updateOnlyAnimation() {
+        ani.update();
+    }
+
     public void draw(Canvas canvas) {
         try{
             canvas.drawBitmap(ani.getImage(),(int)x,(int)y,null);

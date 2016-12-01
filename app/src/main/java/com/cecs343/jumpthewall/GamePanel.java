@@ -32,7 +32,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     int randbg = rand.nextInt(4);
     int randblock = rand.nextInt(2);
 
-
     public GamePanel(Context context) {
         super(context);
 
@@ -112,19 +111,17 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         //jump on right
         //attack on left
         if(event.getAction()==MotionEvent.ACTION_DOWN) {
-            if (event.getX() > getWidth()/2) {
-                if(!player.getPlaying()) {
-                    player.setPlaying(true);
-                } else if (player.getOnGround()) {
-                    player.setOnGround(false);
-                    player.setUp(true);
-                } else {
-                    //start 4 frame timer
-                    player.setStompTimer();
-                }
-            } else {
-                if(!player.getPlaying()) {
-                    player.setPlaying(true);
+            if (!player.getPlaying()) {
+                player.setPlaying(true);
+            } else if (player.getPlaying()) {
+                if (event.getX() > getWidth()/2) {
+                    if (player.getOnGround()) {
+                        player.setOnGround(false);
+                        player.setUp(true);
+                    } else {
+                        //start 4 frame timer
+                        player.setStompTimer();
+                    }
                 } else {
                     player.setAttackTimer();
                 }
@@ -133,6 +130,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             return true;
         }
         return super.onTouchEvent(event);
+    }
+
+    public void newGame() {
+        enemies.clear();
+        blocks.clear();
+
+        timer = 0;
+        mapPart = 0;
+        createMapPart(0,0);
+
     }
 
     public void createMapPart(int startX, int startY) {
@@ -168,7 +175,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 if (Level1.map[mapPart][i] == 2)
                 {
                     if (player == null)
-                    player = new Player(BitmapFactory.decodeResource(getResources(),R.drawable.pinky31f),startX+x*32,startY+y*32,90,90,31);
+                    player = new Player(startX+x*32,startY+y*32,64,112,getResources());
                 }
                 if (Level1.map[mapPart][i] == 3) {
                     enemies.add(new StationaryEnemy(BitmapFactory.decodeResource(getResources(), R.drawable.chomper8f), startX+x*32, startY+y*32, 52, 56, 8));
@@ -211,15 +218,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             for (int i=0;i<enemies.size();i++) {
                 enemies.get(i).update();
                 int col = collision(enemies.get(i),player);
-                if(col == 0) {
-                    if (player.attackTimerIsOn()) {
-                        toBeRemoved.add(i);
-                    } else {
-                        player.setPlaying(false);
-                        break;
-                    }
-                }
-                if (col == 3) {
+                int attackCol = collision(enemies.get(i).getRect(),player.getAttackHitbox());
+                if (attackCol != -1) {
+                    toBeRemoved.add(i);
+                } else if(col == 0) {
+                    player.setPlaying(false);
+                    break;
+                } else if (col == 3) {
                     //make a small window (4 frames) where player can jump
                     if (player.stompTimerIsOn()) {
                         toBeRemoved.add(i);
@@ -273,7 +278,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             for (int i=toBeRemoved.size()-1;i>=0;i--) {
                 blocks.remove((int)toBeRemoved.get(i));
             }
+        } else {
+            //do death animation, restart after animation ends
 
+            for (int i=0;i<enemies.size();i++) {
+                enemies.get(i).updateOnlyAnimation();
+            }
         }
     }
 
@@ -281,6 +291,26 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         Rect aRect = aa.getRect();
         Rect bRect = bb.getRect();
 
+        int dx=((int)aRect.left+aRect.width()/2)-((int)bRect.left+bRect.width()/2);
+        int dy=((int)aRect.top+aRect.height()/2)-((int)bRect.top+bRect.height()/2);
+        int width=(aRect.width()+bRect.width())/2;
+        int height=(aRect.height()+bRect.height())/2;
+        int crossWidth=width*dy;
+        int crossHeight=height*dx;
+        int collision=-1;
+        //
+        if(Math.abs(dx)<=width && Math.abs(dy)<=height){
+            if(crossWidth>crossHeight){
+                collision=(crossWidth>(-crossHeight))?3:2;
+            }else{
+                collision=(crossWidth>-(crossHeight))?0:1;
+            }
+        }
+        return(collision);
+        //return a.getRect().intersect(b.getRect());
+    }
+
+    public int collision(Rect aRect, Rect bRect) {
         int dx=((int)aRect.left+aRect.width()/2)-((int)bRect.left+bRect.width()/2);
         int dy=((int)aRect.top+aRect.height()/2)-((int)bRect.top+bRect.height()/2);
         int width=(aRect.width()+bRect.width())/2;
@@ -332,6 +362,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             }
 
             canvas.drawRect(player.getRect(), p);
+            canvas.drawRect(player.getAttackHitbox(), p);
             p.setColor(Color.BLUE);
 
             for(Enemy e : enemies) {

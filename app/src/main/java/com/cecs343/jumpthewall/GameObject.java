@@ -1,5 +1,8 @@
 package com.cecs343.jumpthewall;
 
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 
@@ -64,6 +67,15 @@ public abstract class GameObject {
 
     public Rect getRect() {
         return new Rect((int)x,(int)y,(int)x+width,(int)y+height);
+    }
+
+    public Bitmap[] getFrames(int drawable, int width, int height, int numFrames, Resources r) {
+        Bitmap sprite = BitmapFactory.decodeResource(r,drawable);
+        Bitmap[] image = new Bitmap[numFrames];
+        for (int i=0;i<image.length;i++) {
+            image[i] = Bitmap.createBitmap(sprite,i*width,0,width,height);
+        }
+        return image;
     }
 
     abstract public void update();

@@ -12,6 +12,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
 
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
@@ -26,6 +27,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private MapTrigger mapTrigger;
     private ArrayList<Enemy> enemies;
     private ArrayList<Block> blocks;
+    private ArrayList<Spark> sparks;
     public int timer;
 
     MediaPlayer mySong;
@@ -112,8 +114,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         //where all the graphics are created for the first time
+        player = new Player(64,256,64,112,getResources());
         enemies = new ArrayList<>();
         blocks = new ArrayList<>();
+        sparks = new ArrayList<>();
 
         mapPart = 0;
         createMapPart(0,0);
@@ -152,8 +156,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void newGame() {
+        player = new Player(64,256,64,112,getResources());
         enemies.clear();
         blocks.clear();
+        sparks.clear();
 
         timer = 0;
         mapPart = 0;
@@ -162,16 +168,17 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void createMapPart(int startX, int startY) {
-        if (mapPart == Level1.map.length) {
+        if (mapPart == AllMaps.level1.length) {
             //player.setPlaying(false);
             //return;
             mapPart = 0;
         }
-        for(int i=0;i<Level1.map[mapPart].length;i++) {
-            if (Level1.map[mapPart][i] != 0) {
-                int x = i % (gameWidth/32);
-                int y = i / (gameWidth/32);
-                if (Level1.map[mapPart][i] == 1)
+        int numScreens = AllMaps.level1[mapPart].length/((gameWidth/32)*(gameHeight/32));
+        for(int i = 0; i< AllMaps.level1[mapPart].length; i++) {
+            if (AllMaps.level1[mapPart][i] != 0) {
+                int x = i % (gameWidth*numScreens/32);
+                int y = i / (gameWidth*numScreens/32);
+                if (AllMaps.level1[mapPart][i] == 1)
                 {
                     //int randblock = rand.nextInt(2);
 
@@ -191,21 +198,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                     }
 
                 }
-                if (Level1.map[mapPart][i] == 2)
-                {
-                    if (player == null)
-                    player = new Player(startX+x*32,startY+y*32,64,112,getResources());
-                }
-                if (Level1.map[mapPart][i] == 3) {
+                if (AllMaps.level1[mapPart][i] == 3) {
                     enemies.add(new StationaryEnemy(BitmapFactory.decodeResource(getResources(), R.drawable.chomper8f), startX+x*32, startY+y*32, 52, 56, 8));
                 }
-                if (Level1.map[mapPart][i] == 4) {
+                if (AllMaps.level1[mapPart][i] == 4) {
                     enemies.add(new PitEnemy(BitmapFactory.decodeResource(getResources(), R.drawable.eye16f), startX+x*32, gameHeight, 40, 78, 16));
                 }
             }
-            if (i == Level1.map[mapPart].length-1) {
-                int x = i % (gameWidth/32);
-                int y = i / (gameWidth/32);
+            if (i == AllMaps.level1[mapPart].length-1) {
+                int x = i % (gameWidth*numScreens/32);
+                int y = i / (gameWidth*numScreens/32);
                 if (mapTrigger == null)
                     mapTrigger = new MapTrigger(startX+x*32,startY+y*32);
                 else {
@@ -253,11 +255,24 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                         break;
                     }
                 }
-                if(enemies.get(i).getX() < -100) {
+                if(enemies.get(i).getX() < -200 || enemies.get(i).getY() > gameHeight+200) {
                     toBeRemoved.add(i);
                 }
             }
+
+            Iterator<Spark> sparksIter = sparks.iterator();
+            while (sparksIter.hasNext()) {
+                Spark s = sparksIter.next();
+                s.update();
+                if(s.getX() < -100 || s.getY() > gameHeight+200 || s.isPlayedOnce()) {
+                    sparksIter.remove();
+                }
+            }
+
             for (int i=toBeRemoved.size()-1;i>=0;i--) {
+                int eX = enemies.get((int)toBeRemoved.get(i)).getRect().centerX();
+                int eY = enemies.get((int)toBeRemoved.get(i)).getRect().centerY();
+                sparks.add(new Spark(eX, eY,getResources()));
                 enemies.remove((int)toBeRemoved.get(i));
             }
 
@@ -289,7 +304,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                     }
                 }
 
-                if(blocks.get(i).getX() < -100) {
+                if(blocks.get(i).getX() < -100 || blocks.get(i).getY() > gameHeight+200) {
                     toBeRemoved.add(i);
                 }
             }
@@ -297,8 +312,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             for (int i=toBeRemoved.size()-1;i>=0;i--) {
                 blocks.remove((int)toBeRemoved.get(i));
             }
+
+            if (!player.getPlaying()) {
+                player.setDeathAni();
+            }
         } else {
             //do death animation, restart after animation ends
+            player.updateDeath();
 
             for (int i=0;i<enemies.size();i++) {
                 enemies.get(i).updateOnlyAnimation();
@@ -364,7 +384,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
             Paint p = new Paint();
             p.setStyle(Paint.Style.STROKE);
-            p.setStrokeWidth(2);
+            p.setStrokeWidth(0);
 
             bg.draw(canvas);
             for(Block b : blocks) {
@@ -389,7 +409,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 canvas.drawRect(e.getRect(), p);
             }
 
-
+            for(Spark s : sparks) {
+                s.draw(canvas);
+            }
 
             canvas.restoreToCount(savedState);
         }

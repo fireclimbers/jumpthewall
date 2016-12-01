@@ -19,6 +19,9 @@
             </intent-filter>
 
         </activity>
+        <activity
+            android:screenOrientation="landscape"
+            android:name=".Game"></activity>
 
     </application>
 

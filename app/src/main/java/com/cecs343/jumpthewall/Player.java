@@ -34,6 +34,7 @@ public class Player extends GameObject {
         onGround = false;
         stompTimer = 0;
         attackTimer = 0;
+        playing = true;
 
         runAnimation.setFrames(getFrames(R.drawable.walking_strip10,108,114,10,r));
         runAnimation.setDelay(60);
@@ -44,15 +45,8 @@ public class Player extends GameObject {
         attackAnimation.setFrames(getFrames(R.drawable.attack_strip7,218,126,7,r),-34,-12);
         attackAnimation.setDelayFrames(1);
 
-    }
-
-    public Bitmap[] getFrames(int drawable, int width, int height, int numFrames, Resources r) {
-        Bitmap sprite = BitmapFactory.decodeResource(r,drawable);
-        Bitmap[] image = new Bitmap[numFrames];
-        for (int i=0;i<image.length;i++) {
-            image[i] = Bitmap.createBitmap(sprite,i*width,0,width,height);
-        }
-        return image;
+        dieAnimation.setFrames(getFrames(R.drawable.die_strip13,202,196,8,r),-80,-60);
+        dieAnimation.setDelay(60);
     }
 
     public void update() {
@@ -80,8 +74,41 @@ public class Player extends GameObject {
         y+=dy;
     }
 
+    public void setDeathAni() {
+        dieAnimation.reset();
+    }
+
+    public void updateDeath() {
+        dieAnimation.update();
+        if (dieAnimation.playedOnce()) {
+            dieAnimation.setFrame(dieAnimation.getTotalFrames()-1);
+        }
+
+        dx = -5;
+
+        if (dieAnimation.getFrame() == 1) {
+            //jump height
+            dy = -14;
+        } else {
+            //gravity
+            dy +=1.4;
+        }
+
+        if(dy>28)dy=28;
+        if(dy<-28)dy=-28;
+
+        if (y > GamePanel.gameWidth+600) {
+            dy = 0;
+        }
+
+        x+=dx;
+        y+=dy;
+    }
+
     public void draw(Canvas canvas) {
-        if (attackTimerIsOn()) {
+        if (!playing) {
+            canvas.drawBitmap(dieAnimation.getImage(),(int)x+dieAnimation.getOffsetX(),(int)y+dieAnimation.getOffsetY(),null);
+        } else if (attackTimerIsOn()) {
             canvas.drawBitmap(attackAnimation.getImage(),(int)x+attackAnimation.getOffsetX(),(int)y+attackAnimation.getOffsetY(),null);
         } else if (onGround) {
             canvas.drawBitmap(runAnimation.getImage(),(int)x+runAnimation.getOffsetX(),(int)y+runAnimation.getOffsetY(),null);

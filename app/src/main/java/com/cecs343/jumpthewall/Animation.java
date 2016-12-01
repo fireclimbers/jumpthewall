@@ -54,6 +54,8 @@ public class Animation {
         currentFrame = i;
     }
 
+    public int getTotalFrames() { return frames.length; }
+
     public void update() {
         long elapsed = (System.nanoTime()-startTime)/1000000;
         if (elapsed > delay) {
@@ -90,5 +92,10 @@ public class Animation {
 
     public boolean playedOnce() {
         return playedOnce;
+    }
+
+    public void reset() {
+        setFrame(0);
+        playedOnce = false;
     }
 }

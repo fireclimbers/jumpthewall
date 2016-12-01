@@ -12,15 +12,6 @@ import android.view.WindowManager;
  */
 
 public class Menu extends AppCompatActivity{
-    MediaPlayer mySong1;
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (mySong1 != null) {
-            mySong1.release();
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,9 +21,7 @@ public class Menu extends AppCompatActivity{
     }
 
     public void openNewActivity(View view) {
-        setContentView(new GamePanel(this));
-        mySong1 = MediaPlayer.create(this,R.raw.song1);
-        mySong1.start();
+        startActivity(new Intent(this,Game.class));
     }
 
     public void closeActivity(View view) {

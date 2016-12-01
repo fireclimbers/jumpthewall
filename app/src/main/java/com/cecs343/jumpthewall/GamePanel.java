@@ -27,10 +27,15 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private ArrayList<Enemy> enemies;
     private ArrayList<Block> blocks;
     public int timer;
+
+    MediaPlayer mySong;
+
     Random rand = new Random();
-    
-    int randbg = rand.nextInt(4);
+
+    //choose random background, and random block type
+    int randbg = rand.nextInt(3);
     int randblock = rand.nextInt(2);
+    int randsong = rand.nextInt(2);
 
     public GamePanel(Context context) {
         super(context);
@@ -41,6 +46,28 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
         setFocusable(true);
     }
+
+    /*
+    public void PlaySong()
+    {
+        if(randsong == 0)
+        {
+            mySong = MediaPlayer.create(this.getContext(),R.raw.song1);
+        }
+
+        if(randsong == 1)
+        {
+            mySong = MediaPlayer.create(this.getContext(),R.raw.song2);
+        }
+
+        if(randsong == 2)
+        {
+            mySong = MediaPlayer.create(this.getContext(),R.raw.song3);
+        }
+
+        mySong.start();
+    }
+    */
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height){}
@@ -62,37 +89,29 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(SurfaceHolder holder){
-        //int randbg = rand.nextInt(4);
 
-        // Generate random background to use
+        //pick background based on randomly generated number
         if(randbg == 0)
-        {
-            bg = new Background(R.drawable.newbg, getResources());
-        }
-
-        if(randbg == 1)
         {
             bg = new Background(R.drawable.newbg1, getResources());
         }
 
-        if(randbg == 2)
+        if(randbg == 1)
         {
             bg = new Background(R.drawable.newbg2, getResources());
         }
 
-        if(randbg == 3)
+        if(randbg == 2)
         {
             bg = new Background(R.drawable.newbg3, getResources());
         }
 
-        if(randbg == 4)
+        if(randbg == 3)
         {
             bg = new Background(R.drawable.newbg4, getResources());
         }
 
         //where all the graphics are created for the first time
-
-        //bg = new Background(R.drawable.newbg, getResources());
         enemies = new ArrayList<>();
         blocks = new ArrayList<>();
 

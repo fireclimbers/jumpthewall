@@ -1,8 +1,10 @@
-package com.cecs343.jumpthewall;
+package com.cecs343.jumpthewall.enemies;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+
+import com.cecs343.jumpthewall.enemies.Enemy;
 
 /**
  * Created by docbot on 11/29/16.

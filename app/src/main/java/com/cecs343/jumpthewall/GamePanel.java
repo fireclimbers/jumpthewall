@@ -11,6 +11,13 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.cecs343.jumpthewall.enemies.Enemy;
+import com.cecs343.jumpthewall.enemies.FloatingEnemy;
+import com.cecs343.jumpthewall.enemies.PitEnemy;
+import com.cecs343.jumpthewall.enemies.ShieldedEnemy;
+import com.cecs343.jumpthewall.enemies.StationaryEnemy;
+import com.cecs343.jumpthewall.enemies.SwoopEnemy;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
@@ -200,11 +207,20 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                     }
 
                 }
-                if (AllMaps.level1[mapPart][i] == 3) {
+                if (AllMaps.level1[mapPart][i] == 2) {
                     enemies.add(new StationaryEnemy(BitmapFactory.decodeResource(getResources(), R.drawable.chomper8f), startX+x*32, startY+y*32, 52, 56, 8));
                 }
+                if (AllMaps.level1[mapPart][i] == 3) {
+                    enemies.add(new FloatingEnemy(BitmapFactory.decodeResource(getResources(), R.drawable.floating_strip5), startX+x*32, startY+y*32, 80, 44, 5));
+                }
                 if (AllMaps.level1[mapPart][i] == 4) {
+                    enemies.add(new ShieldedEnemy(BitmapFactory.decodeResource(getResources(), R.drawable.chomper8f), startX+x*32, startY+y*32, 52, 56, 8));
+                }
+                if (AllMaps.level1[mapPart][i] == 5) {
                     enemies.add(new PitEnemy(BitmapFactory.decodeResource(getResources(), R.drawable.eye16f), startX+x*32, gameHeight, 40, 78, 16));
+                }
+                if (AllMaps.level1[mapPart][i] == 6) {
+                    enemies.add(new SwoopEnemy(BitmapFactory.decodeResource(getResources(), R.drawable.swoop_strip8), startX+x*32, 0, 54, 50, 8));
                 }
             }
             if (i == AllMaps.level1[mapPart].length-1) {
@@ -241,16 +257,26 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 int col = collision(enemies.get(i),player);
                 int attackCol = collision(enemies.get(i).getRect(),player.getAttackHitbox());
                 if (attackCol != -1) {
-                    toBeRemoved.add(i);
+                    //if player is attacking it
+                    if (!(enemies.get(i) instanceof ShieldedEnemy)) {
+                        toBeRemoved.add(i);
+                    } //might need to add an else here
                 } else if(col == 0) {
+                    //if player runs into it
                     player.setPlaying(false);
                     break;
                 } else if (col == 3) {
-                    //make a small window (4 frames) where player can jump
+                    //if player is stoming on it
                     if (player.stompTimerIsOn()) {
-                        toBeRemoved.add(i);
-                        player.setUp(true);
+                        if (!(enemies.get(i) instanceof PitEnemy)) {
+                            toBeRemoved.add(i);
+                            player.setUp(true);
+                        } else {
+                            player.setPlaying(false);
+                            break;
+                        }
                     } else {
+                        //if player is not stomping on it
                         player.setPlaying(false);
                         break;
                     }
@@ -388,7 +414,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
             Paint p = new Paint();
             p.setStyle(Paint.Style.STROKE);
-            p.setStrokeWidth(0);
+            p.setStrokeWidth(1);
 
             bg.draw(canvas);
             for(Block b : blocks) {
@@ -410,7 +436,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
             for(Enemy e : enemies) {
                 e.draw(canvas);
-                //canvas.drawRect(e.getRect(), p);
+                canvas.drawRect(e.getRect(), p);
             }
 
             for(Spark s : sparks) {

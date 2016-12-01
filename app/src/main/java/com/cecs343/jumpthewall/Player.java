@@ -63,10 +63,10 @@ public class Player extends GameObject {
 
         if (up) {
             //jump height
-            dy = -14;
+            dy = -22;
         } else {
             //gravity
-            dy +=1.4;
+            dy +=2.2;
         }
 
         if(dy>28)dy=28;

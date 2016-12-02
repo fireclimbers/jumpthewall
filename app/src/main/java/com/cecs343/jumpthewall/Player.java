@@ -1,8 +1,6 @@
 package com.cecs343.jumpthewall;
 
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 
@@ -23,7 +21,7 @@ public class Player extends GameObject {
     private int stompCooldown = 8;
     private int attackWindow = 8; //# of frames attack is + 1
     private int attackCooldown = 4;
-    private int timer;
+    private int score;
 
     public Player(int x, int y, int w, int h, Resources r) {
         this.x = x;
@@ -35,7 +33,7 @@ public class Player extends GameObject {
         onGround = false;
         stompTimer = 0;
         attackTimer = 0;
-        timer = 0;
+        score = 0;
         //playing = true;
 
         runAnimation.setFrames(getFrames(R.drawable.walking_strip10,108,114,10,r));
@@ -52,7 +50,7 @@ public class Player extends GameObject {
     }
 
     public void update() {
-        timer++;
+        score++;
         if (stompTimer > -stompCooldown) {stompTimer--;}
         if (attackTimer > -attackCooldown) {attackTimer--;}
 
@@ -109,7 +107,7 @@ public class Player extends GameObject {
     }
 
     public void draw(Canvas canvas) {
-        if (!playing && timer > 0) {
+        if (!playing && score > 0) {
             canvas.drawBitmap(dieAnimation.getImage(),(int)x+dieAnimation.getOffsetX(),(int)y+dieAnimation.getOffsetY(),null);
         } else if (attackTimerIsOn()) {
             canvas.drawBitmap(attackAnimation.getImage(),(int)x+attackAnimation.getOffsetX(),(int)y+attackAnimation.getOffsetY(),null);
@@ -128,7 +126,7 @@ public class Player extends GameObject {
         return new Rect(0,0,0,0);
     }
 
-    public int getTimer() { return timer; }
+    public int getScore() { return score; }
     public boolean getPlaying(){return playing;}
     public void setPlaying(boolean b){playing = b;}
     public void setOnGround(boolean b) {onGround = b;}

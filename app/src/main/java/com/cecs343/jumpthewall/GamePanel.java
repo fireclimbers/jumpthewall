@@ -141,10 +141,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         //jump on right
         //attack on left
         if(event.getAction()==MotionEvent.ACTION_DOWN) {
-            if (!player.getPlaying() && player.getTimer() > 0) {
+            if (!player.getPlaying() && player.getScore() > 0) {
                 //player.setPlaying(true);
                 newGame();
-            } else if (!player.getPlaying() && player.getTimer() == 0) {
+            } else if (!player.getPlaying() && player.getScore() == 0) {
                 player.setPlaying(true);
             } else if (player.getPlaying()) {
                 if (event.getX() > getWidth()/2) {
@@ -343,10 +343,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 player.setPlaying(false);
             }
 
-            if (!player.getPlaying() && player.getTimer() > 0) {
+            if (!player.getPlaying() && player.getScore() > 0) {
                 player.setDeathAni();
             }
-        } else if (player.getTimer() > 0) {
+        } else if (player.getScore() > 0) {
             //do death animation, restart after animation ends
             player.updateDeath();
 

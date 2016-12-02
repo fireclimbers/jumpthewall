@@ -32,6 +32,7 @@ public class Menu extends AppCompatActivity{
 
         menuSong = MediaPlayer.create(this,R.raw.menusong);
         menuSong.start();
+        menuSong.setLooping(true);
     }
 
     public void openNewActivity(View view) {

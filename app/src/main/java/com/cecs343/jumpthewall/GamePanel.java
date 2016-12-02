@@ -214,7 +214,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                     enemies.add(new FloatingEnemy(BitmapFactory.decodeResource(getResources(), R.drawable.floating_strip5), startX+x*32, startY+y*32, 80, 44, 5));
                 }
                 if (AllMaps.level1[mapPart][i] == 4) {
-                    enemies.add(new ShieldedEnemy(BitmapFactory.decodeResource(getResources(), R.drawable.chomper8f), startX+x*32, startY+y*32, 52, 56, 8));
+                    enemies.add(new ShieldedEnemy(BitmapFactory.decodeResource(getResources(), R.drawable.shielded_strip8), startX+x*32, startY+y*32, 60, 56, 8));
                 }
                 if (AllMaps.level1[mapPart][i] == 5) {
                     enemies.add(new PitEnemy(BitmapFactory.decodeResource(getResources(), R.drawable.eye16f), startX+x*32, gameHeight, 40, 78, 16));

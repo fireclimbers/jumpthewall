@@ -26,8 +26,8 @@ public class SwoopEnemy extends Enemy {
         setObeyGravity(false);
 
         Random r = new Random();
-        //fakeOut = r.nextBoolean();
-        fakeOut = false;
+        fakeOut = r.nextBoolean();
+        //fakeOut = false;
     }
 
     public void update() {

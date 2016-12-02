@@ -24,6 +24,7 @@ import java.util.Random;
 
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private MainThread thread;
+    public static int initMovespeed = -16;
     public static int movespeed = -16;
     public static int tileSize = 32;
     public static int gameWidth = 832;
@@ -35,6 +36,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private ArrayList<Enemy> enemies;
     private ArrayList<Block> blocks;
     private ArrayList<Spark> sparks;
+    private int screenCount;
+    private int phaseCount;
+    private int phaseLength = 19;
     //public int timer;
 
     MediaPlayer mySong;
@@ -100,6 +104,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     public void surfaceCreated(SurfaceHolder holder){
 
         //pick background based on randomly generated number
+        /*
         if(randbg == 0)
         {
             bg = new Background(R.drawable.newbg1, getResources());
@@ -118,13 +123,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         if(randbg == 3)
         {
             bg = new Background(R.drawable.newbg4, getResources());
-        }
+        }*/
+        bg = new Background(R.drawable.newbg4, getResources());
 
         //where all the graphics are created for the first time
         player = new Player(64,256,64,112,getResources());
         enemies = new ArrayList<>();
         blocks = new ArrayList<>();
         sparks = new ArrayList<>();
+        phaseCount = 0;
+        screenCount = 0;
 
         mapPart = 0;
         createMapPart(0,0);
@@ -170,24 +178,25 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         blocks.clear();
         sparks.clear();
 
+        movespeed = initMovespeed;
         mapPart = 0;
+        screenCount = 0;
+        phaseCount = 0;
         createMapPart(0,0);
         player = new Player(64,256,64,112,getResources());
         //player.setPlaying(true);
     }
 
     public void createMapPart(int startX, int startY) {
-        if (mapPart == AllMaps.level1.length) {
-            //player.setPlaying(false);
-            //return;
-            mapPart = 0;
-        }
-        int numScreens = AllMaps.level1[mapPart].length/((gameWidth/32)*(gameHeight/32));
-        for(int i = 0; i< AllMaps.level1[mapPart].length; i++) {
-            if (AllMaps.level1[mapPart][i] != 0) {
+        mapPart = rand.nextInt(6);
+
+        int[] map = AllMaps.getMapLevel(phaseCount,screenCount,mapPart,rand.nextInt(10));
+        int numScreens = map.length/((gameWidth/32)*(gameHeight/32));
+        for(int i = 0; i< map.length; i++) {
+            if (map[i] != 0) {
                 int x = i % (gameWidth*numScreens/32);
                 int y = i / (gameWidth*numScreens/32);
-                if (AllMaps.level1[mapPart][i] == 1)
+                if (map[i] == 1)
                 {
                     //int randblock = rand.nextInt(2);
 
@@ -207,23 +216,23 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                     }
 
                 }
-                if (AllMaps.level1[mapPart][i] == 2) {
+                if (map[i] == 2) {
                     enemies.add(new StationaryEnemy(BitmapFactory.decodeResource(getResources(), R.drawable.chomper8f), startX+x*32, startY+y*32, 52, 56, 8));
                 }
-                if (AllMaps.level1[mapPart][i] == 3) {
+                if (map[i] == 3) {
                     enemies.add(new FloatingEnemy(BitmapFactory.decodeResource(getResources(), R.drawable.floating_strip5), startX+x*32, startY+y*32, 80, 44, 5));
                 }
-                if (AllMaps.level1[mapPart][i] == 4) {
+                if (map[i] == 4) {
                     enemies.add(new ShieldedEnemy(BitmapFactory.decodeResource(getResources(), R.drawable.shielded_strip8), startX+x*32, startY+y*32, 60, 56, 8));
                 }
-                if (AllMaps.level1[mapPart][i] == 5) {
+                if (map[i] == 5) {
                     enemies.add(new PitEnemy(BitmapFactory.decodeResource(getResources(), R.drawable.eye16f), startX+x*32, gameHeight, 40, 78, 16));
                 }
-                if (AllMaps.level1[mapPart][i] == 6) {
+                if (map[i] == 6) {
                     enemies.add(new SwoopEnemy(BitmapFactory.decodeResource(getResources(), R.drawable.swoop_strip8), startX+x*32, 0, 54, 50, 8));
                 }
             }
-            if (i == AllMaps.level1[mapPart].length-1) {
+            if (i == map.length-1) {
                 int x = i % (gameWidth*numScreens/32);
                 int y = i / (gameWidth*numScreens/32);
                 //if (mapTrigger == null)
@@ -235,7 +244,19 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
             }
         }
-        mapPart++;
+        //mapPart++;
+        if (screenCount == phaseLength) {
+            screenCount = 0;
+            phaseCount++;
+            movespeed -= 1;
+            bg.changeBackground(R.drawable.newbg1,getResources());
+        } else {
+            screenCount++;
+        }
+
+        if (map.length == 0) {
+            createMapPart(startX,startY);
+        }
     }
 
     public void update() {

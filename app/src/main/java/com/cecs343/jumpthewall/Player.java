@@ -61,10 +61,10 @@ public class Player extends GameObject {
 
         if (up) {
             //jump height
-            dy = -22;
+            dy = GamePanel.movespeed*2;
         } else {
             //gravity
-            dy +=2.2;
+            dy +=-(double)GamePanel.movespeed*2/10;
         }
 
         if(dy>28)dy=28;
@@ -85,7 +85,7 @@ public class Player extends GameObject {
             dieAnimation.setFrame(dieAnimation.getTotalFrames()-1);
         }
 
-        dx = -5;
+        dx = GamePanel.movespeed;
 
         if (dieAnimation.getFrame() == 1) {
             //jump height

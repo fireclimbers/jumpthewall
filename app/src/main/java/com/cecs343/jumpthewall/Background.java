@@ -28,8 +28,6 @@ public class Background extends GameObject {
         transition = false;
 
         //changeBackground(R.drawable.newbg1,r);
-
-        this.dx = GamePanel.movespeed;
     }
 
     public void changeBackground(int res, Resources r) {
@@ -42,6 +40,7 @@ public class Background extends GameObject {
     }
 
     public void update() {
+        dx = GamePanel.movespeed;
         x += dx;
         if (x<-width) {
             x = 0;

@@ -20,7 +20,7 @@ public class Player extends GameObject {
     private int stompWindow = 4;
     private int stompCooldown = 8;
     private int attackWindow = 8; //# of frames attack is + 1
-    private int attackCooldown = 4;
+    private int attackCooldown = 2;
     private int score;
 
     public Player(int x, int y, int w, int h, Resources r) {

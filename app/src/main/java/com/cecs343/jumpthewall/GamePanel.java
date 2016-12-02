@@ -26,7 +26,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private MainThread thread;
     public static int initMovespeed = -16;
     public static int movespeed = -16;
-    public static int tileSize = 32;
+    public static int tileSize = 64;
     public static int gameWidth = 832;
     public static int gameHeight = 448;
     public static int mapPart;
@@ -39,6 +39,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private int screenCount;
     private int phaseCount;
     private int phaseLength = 19;
+    private int[] bgRotation = {R.drawable.newbg3,R.drawable.newbg4,R.drawable.newbg1,R.drawable.newbg2};
     //public int timer;
 
     MediaPlayer mySong;
@@ -124,7 +125,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         {
             bg = new Background(R.drawable.newbg4, getResources());
         }*/
-        bg = new Background(R.drawable.newbg4, getResources());
+
+        bg = new Background(R.drawable.newbg3, getResources());
 
         //where all the graphics are created for the first time
         player = new Player(64,256,64,112,getResources());
@@ -174,6 +176,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void newGame() {
+        bg = new Background(R.drawable.newbg3, getResources());
         enemies.clear();
         blocks.clear();
         sparks.clear();
@@ -188,55 +191,49 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void createMapPart(int startX, int startY) {
-        mapPart = rand.nextInt(6);
+        mapPart = rand.nextInt(10);
 
-        int[] map = AllMaps.getMapLevel(phaseCount,screenCount,mapPart,rand.nextInt(10));
-        int numScreens = map.length/((gameWidth/32)*(gameHeight/32));
+        int[] map = AllMaps.getMapLevel(phaseCount,screenCount,mapPart, rand.nextInt(10));
+        int numScreens = map.length/((gameWidth/tileSize)*(gameHeight/tileSize));
         for(int i = 0; i< map.length; i++) {
             if (map[i] != 0) {
-                int x = i % (gameWidth*numScreens/32);
-                int y = i / (gameWidth*numScreens/32);
-                if (map[i] == 1)
-                {
-                    //int randblock = rand.nextInt(2);
-
-                    if(randblock == 0)
-                    {
-                        blocks.add(new Block(BitmapFactory.decodeResource(getResources(), R.drawable.brick), startX + x * 32, startY + y * 32, 32, 32));
+                int x = i % (gameWidth*numScreens/tileSize);
+                int y = i / (gameWidth*numScreens/tileSize);
+                if (map[i] == 1) {
+                    int blockSprite;
+                    if (randblock == 0) {
+                        blockSprite = R.drawable.brick;
+                    } else if (randblock == 1) {
+                        blockSprite = R.drawable.brick1;
+                    } else {
+                        blockSprite = R.drawable.brick2;
                     }
-
-                    if(randblock == 1)
-                    {
-                        blocks.add(new Block(BitmapFactory.decodeResource(getResources(), R.drawable.brick1), startX + x * 32, startY + y * 32, 32, 32));
-                    }
-
-                    if(randblock == 2)
-                    {
-                        blocks.add(new Block(BitmapFactory.decodeResource(getResources(), R.drawable.brick2), startX + x * 32, startY + y * 32, 32, 32));
-                    }
-
+                    blocks.add(new Block(BitmapFactory.decodeResource(getResources(), blockSprite), startX + x * tileSize, startY + y * tileSize, 32, 32));
+                    blocks.add(new Block(BitmapFactory.decodeResource(getResources(), blockSprite), (startX + x * tileSize) + (tileSize/2), startY + y * tileSize, 32, 32));
+                    blocks.add(new Block(BitmapFactory.decodeResource(getResources(), blockSprite), startX + x * tileSize, (startY + y * tileSize) + (tileSize/2), 32, 32));
+                    blocks.add(new Block(BitmapFactory.decodeResource(getResources(), blockSprite), (startX + x * tileSize) + (tileSize/2), (startY + y * tileSize) + (tileSize/2), 32, 32));
                 }
                 if (map[i] == 2) {
-                    enemies.add(new StationaryEnemy(BitmapFactory.decodeResource(getResources(), R.drawable.chomper8f), startX+x*32, startY+y*32, 52, 56, 8));
+                    enemies.add(new StationaryEnemy(BitmapFactory.decodeResource(getResources(), R.drawable.chomper8f), startX+x*tileSize, startY+y*tileSize, 52, 56, 8));
                 }
                 if (map[i] == 3) {
-                    enemies.add(new FloatingEnemy(BitmapFactory.decodeResource(getResources(), R.drawable.floating_strip5), startX+x*32, startY+y*32, 80, 44, 5));
+                    enemies.add(new FloatingEnemy(BitmapFactory.decodeResource(getResources(), R.drawable.floating_strip5), startX+x*tileSize, startY+y*tileSize, 80, 44, 5));
                 }
                 if (map[i] == 4) {
-                    enemies.add(new ShieldedEnemy(BitmapFactory.decodeResource(getResources(), R.drawable.shielded_strip8), startX+x*32, startY+y*32, 60, 56, 8));
+                    enemies.add(new ShieldedEnemy(BitmapFactory.decodeResource(getResources(), R.drawable.shielded_strip8), startX+x*tileSize, startY+y*tileSize, 60, 56, 8));
                 }
                 if (map[i] == 5) {
-                    enemies.add(new PitEnemy(BitmapFactory.decodeResource(getResources(), R.drawable.eye16f), startX+x*32, gameHeight, 40, 78, 16));
+                    enemies.add(new PitEnemy(BitmapFactory.decodeResource(getResources(), R.drawable.eye16f), startX+x*tileSize, gameHeight, 40, 78, 16));
                 }
                 if (map[i] == 6) {
-                    enemies.add(new SwoopEnemy(BitmapFactory.decodeResource(getResources(), R.drawable.swoop_strip8), startX+x*32, 0, 54, 50, 8));
+                    enemies.add(new SwoopEnemy(BitmapFactory.decodeResource(getResources(), R.drawable.swoop_strip8), startX+x*tileSize, 0, 54, 50, 8));
                 }
             }
             if (i == map.length-1) {
-                int x = i % (gameWidth*numScreens/32);
-                int y = i / (gameWidth*numScreens/32);
+                int x = i % (gameWidth*numScreens/tileSize);
+                int y = i / (gameWidth*numScreens/tileSize);
                 //if (mapTrigger == null)
-                    mapTrigger = new MapTrigger(startX+x*32,startY+y*32);
+                    mapTrigger = new MapTrigger(startX+x*tileSize,startY+y*tileSize);
                 //else {
                 //    mapTrigger.setX(startX+x*32);
                 //    mapTrigger.setY(startY+y*32);
@@ -244,12 +241,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
             }
         }
-        //mapPart++;
         if (screenCount == phaseLength) {
             screenCount = 0;
             phaseCount++;
             movespeed -= 1;
-            bg.changeBackground(R.drawable.newbg1,getResources());
+            bg.changeBackground(bgRotation[phaseCount%4],getResources());
         } else {
             screenCount++;
         }
@@ -269,7 +265,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             mapTrigger.update();
 
             if (mapTrigger.getX() < gameWidth) {
-                createMapPart((int)mapTrigger.getX()+32,0);
+                createMapPart((int)mapTrigger.getX()+tileSize,0);
             }
 
             ArrayList<Integer> toBeRemoved = new ArrayList<>();

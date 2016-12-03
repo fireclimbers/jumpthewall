@@ -42,6 +42,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private int[] bgRotation = {R.drawable.newbg3,R.drawable.newbg4,R.drawable.newbg1,R.drawable.newbg2};
     //public int timer;
 
+    MediaPlayer jumpSfx;
+    MediaPlayer landSfx;
+    MediaPlayer swingSfx;
+    MediaPlayer hitSfx;
+    MediaPlayer pitEnemySfx;
+    MediaPlayer swoopEnemySfx;
+    MediaPlayer deathSfx;
+
     MediaPlayer mySong;
 
     Random rand = new Random();
@@ -55,6 +63,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         super(context);
 
         //this class is the view that creates all the graphics
+
+        deathSfx = MediaPlayer.create(context, R.raw.deathscream);
 
         getHolder().addCallback(this);
 
@@ -361,6 +371,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             }
 
             if (!player.getPlaying() && player.getScore() > 0) {
+                deathSfx.start();
                 player.setDeathAni();
             }
         } else if (player.getScore() > 0) {

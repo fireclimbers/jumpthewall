@@ -12,6 +12,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.content.Intent;
+import android.app.Activity;
 
 
 import com.cecs343.jumpthewall.enemies.Enemy;
@@ -193,7 +194,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 }
             } else if (!player.getPlaying()) {
                 if(event.getX() > getWidth()/2) {
-
+                    Intent intent = new Intent().setClass(getContext(), Menu.class);
+                    ((Activity) getContext()).startActivity(intent);
+                    player.setPlaying(false);
+                    return true;
                 } else
                     newGame();
             }

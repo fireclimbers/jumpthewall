@@ -45,6 +45,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private int[] bgRotation = {R.drawable.newbg3,R.drawable.newbg4,R.drawable.newbg1,R.drawable.newbg2};
     //public int timer;
 
+    MediaPlayer jumpSfx;
+    MediaPlayer swingSfx;
+    MediaPlayer landSfx;
+    MediaPlayer hitSfx;
+    MediaPlayer deathSfx;
+    MediaPlayer pitEnemySfx;
+    MediaPlayer swoopEnemySfx;
+
     MediaPlayer mySong;
 
     Random rand = new Random();
@@ -58,6 +66,15 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         super(context);
 
         //this class is the view that creates all the graphics
+
+        deathSfx = MediaPlayer.create(context, R.raw.deathscream);
+        jumpSfx = MediaPlayer.create(context,R.raw.playerjump);
+        swingSfx = MediaPlayer.create(context,R.raw.playerswing);
+        landSfx = MediaPlayer.create(context,R.raw.playerland);
+        hitSfx = MediaPlayer.create(context,R.raw.hammerimpact);
+        pitEnemySfx = MediaPlayer.create(context,R.raw.pitenemyjump);
+        swoopEnemySfx = MediaPlayer.create(context,R.raw.swoopenemy);
+
 
         getHolder().addCallback(this);
 
@@ -165,12 +182,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                     if (player.getOnGround()) {
                         player.setOnGround(false);
                         player.setUp(true);
+                        jumpSfx.start();
                     } else {
                         //start 4 frame timer
                         player.setStompTimer();
                     }
                 } else {
                     player.setAttackTimer();
+                    swingSfx.start();
                 }
             } else if (!player.getPlaying()) {
                 if(event.getX() > getWidth()/2) {
@@ -286,6 +305,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 int attackCol = collision(enemies.get(i).getRect(),player.getAttackHitbox());
                 if (attackCol != -1) {
                     //if player is attacking it
+                    hitSfx.start();
                     if (!(enemies.get(i) instanceof ShieldedEnemy)) {
                         toBeRemoved.add(i);
                     } //might need to add an else here
@@ -295,6 +315,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                     break;
                 } else if (col == 3) {
                     //if player is stoming on it
+                    landSfx.start();
                     if (player.stompTimerIsOn()) {
                         if (!(enemies.get(i) instanceof PitEnemy)) {
                             toBeRemoved.add(i);
@@ -372,6 +393,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             }
 
             if (!player.getPlaying() && player.getScore() > 0) {
+                deathSfx.start();
                 player.setDeathAni();
             }
         } else if (player.getScore() > 0) {

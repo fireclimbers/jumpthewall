@@ -1,8 +1,10 @@
 package com.cecs343.jumpthewall;
 
+
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.media.MediaPlayer;
 
 /**
  * Created by docbot on 11/26/16.
@@ -22,6 +24,8 @@ public class Player extends GameObject {
     private int attackWindow = 8; //# of frames attack is + 1
     private int attackCooldown = 2;
     private int score;
+
+
 
     public Player(int x, int y, int w, int h, Resources r) {
         this.x = x;
@@ -47,6 +51,8 @@ public class Player extends GameObject {
 
         dieAnimation.setFrames(getFrames(R.drawable.die_strip13,202,196,8,r),-80,-60);
         dieAnimation.setDelay(60);
+
+
     }
 
     public void update() {
@@ -77,6 +83,7 @@ public class Player extends GameObject {
 
     public void setDeathAni() {
         dieAnimation.reset();
+        //
     }
 
     public void updateDeath() {

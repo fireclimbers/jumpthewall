@@ -20,15 +20,6 @@
         android:layout_below="@+id/textView2"
         android:layout_centerHorizontal="true" />
 
-    <Button
-        android:text="Exit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/button3"
-        android:onClick="closeActivity"
-        android:layout_below="@+id/button2"
-        android:layout_centerHorizontal="true" />
-
     <TextView
         android:text="Jump the Wall"
         android:layout_width="wrap_content"
@@ -38,5 +29,24 @@
         android:id="@+id/textView2"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
+
+    <Button
+        android:text="Exit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/button3"
+        android:onClick="closeActivity"
+        android:layout_below="@+id/button2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="52dp" />
+
+    <Button
+        android:text="Option"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button2"
+        android:layout_alignStart="@+id/button3"
+        android:onClick="optionMenu"
+        android:id="@+id/button" />
 
 </RelativeLayout>

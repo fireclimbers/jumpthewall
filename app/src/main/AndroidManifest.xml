@@ -22,6 +22,12 @@
         <activity
             android:screenOrientation="landscape"
             android:name=".Game"></activity>
+        <activity android:name=".pop"
+            android:theme="@style/AppTheme.CustomTheme"
+            ></activity>
+        <activity android:name=".helpPopUp"
+            android:theme="@style/AppTheme.CustomTheme"
+            ></activity>
 
     </application>
 

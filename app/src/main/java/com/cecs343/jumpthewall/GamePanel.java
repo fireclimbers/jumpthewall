@@ -7,9 +7,12 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.media.MediaPlayer;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.content.Intent;
+
 
 import com.cecs343.jumpthewall.enemies.Enemy;
 import com.cecs343.jumpthewall.enemies.FloatingEnemy;
@@ -151,10 +154,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         //jump on right
         //attack on left
         if(event.getAction()==MotionEvent.ACTION_DOWN) {
-            if (!player.getPlaying() && player.getScore() > 0) {
-                //player.setPlaying(true);
-                newGame();
-            } else if (!player.getPlaying() && player.getScore() == 0) {
+//            if (!player.getPlaying() && player.getScore() > 0) {
+//                //player.setPlaying(true);
+//                newGame();
+//            } else
+            if (!player.getPlaying() && player.getScore() == 0) {
                 player.setPlaying(true);
             } else if (player.getPlaying()) {
                 if (event.getX() > getWidth()/2) {
@@ -168,12 +172,19 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 } else {
                     player.setAttackTimer();
                 }
+            } else if (!player.getPlaying()) {
+                if(event.getX() > getWidth()/2) {
+
+                } else
+                    newGame();
             }
 
             return true;
         }
         return super.onTouchEvent(event);
     }
+
+
 
     public void newGame() {
         bg = new Background(R.drawable.newbg3, getResources());
@@ -367,11 +378,21 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             //do death animation, restart after animation ends
             player.updateDeath();
 
+            bg = new Background(R.drawable.optionmenu, getResources());
+
+            enemies.clear();
+            blocks.clear();
+            sparks.clear();
+
+
             for (int i=0;i<enemies.size();i++) {
                 enemies.get(i).updateOnlyAnimation();
             }
         }
     }
+
+
+
 
     public int collision(GameObject aa, GameObject bb) {
         Rect aRect = aa.getRect();
@@ -441,11 +462,15 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
             player.draw(canvas);
 
+
+
+
             if (player.attackTimerIsOn()) {
                 p.setColor(Color.RED);
             } else {
                 p.setColor(Color.GREEN);
             }
+
 
             //canvas.drawRect(player.getRect(), p);
             //canvas.drawRect(player.getAttackHitbox(), p);

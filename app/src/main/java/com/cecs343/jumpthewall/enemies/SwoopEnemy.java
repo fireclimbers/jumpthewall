@@ -40,6 +40,7 @@ public class SwoopEnemy extends Enemy {
 
         if (hasJumped) {
             //dy += 1.5;
+            //swoopsfx.start();
             if (fakeOut) {
                 int topOffset = 96;
                 int leftOffset = 64;

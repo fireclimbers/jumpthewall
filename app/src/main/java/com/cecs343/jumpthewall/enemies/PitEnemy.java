@@ -1,10 +1,14 @@
 package com.cecs343.jumpthewall.enemies;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.media.MediaPlayer;
 
 import com.cecs343.jumpthewall.Animation;
+import com.cecs343.jumpthewall.GameObject;
 import com.cecs343.jumpthewall.GamePanel;
+import com.cecs343.jumpthewall.R;
 import com.cecs343.jumpthewall.enemies.Enemy;
 
 /**
@@ -21,6 +25,8 @@ public class PitEnemy extends Enemy {
         dy = 0;
         hasJumped = false;
         setObeyGravity(false);
+
+
     }
 
     public void update() {
@@ -41,6 +47,7 @@ public class PitEnemy extends Enemy {
             double currentX = x-xx-leftOffset;
             double currentY = -a*Math.pow(currentX,2) + c;
             y = GamePanel.gameHeight-currentY;
+
         }
 
         //parabola

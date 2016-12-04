@@ -151,4 +151,5 @@ public class Player extends GameObject {
         }
     }
     public boolean attackTimerIsOn() {return (attackTimer > 0);}
+    public void resetScore() {score = 0;}
 }

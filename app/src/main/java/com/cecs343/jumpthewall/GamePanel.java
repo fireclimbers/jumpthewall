@@ -54,7 +54,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     MediaPlayer pitEnemySfx;
     MediaPlayer swoopEnemySfx;
 
-    MediaPlayer mySong;
+    Game c;
 
     Random rand = new Random();
 
@@ -65,6 +65,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     public GamePanel(Context context) {
         super(context);
+
+        c = (Game)context;
 
         //this class is the view that creates all the graphics
 
@@ -150,12 +152,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 }
             } else if (!player.getPlaying()) {
                 if(event.getX() > getWidth()/2) {
-                    Intent intent = new Intent().setClass(getContext(), Menu.class);
-                    ((Activity) getContext()).startActivity(intent);
-                    player.setPlaying(false);
-                    return true;
-                } else
+                    c.closeActivity();
+                    //Intent intent = new Intent().setClass(getContext(), Menu.class);
+                    //((Activity) getContext()).startActivity(intent);
+                    //player.setPlaying(false);
+                } else {
                     newGame();
+                }
             }
 
             return true;
@@ -166,6 +169,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
 
     public void newGame() {
+        //player.resetScore();
         bg = new Background(R.drawable.newbg3, getResources());
         enemies.clear();
         blocks.clear();
@@ -353,19 +357,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             }
 
             if (!player.getPlaying() && player.getScore() > 0) {
+                bg = new Background(R.drawable.optionmenu, getResources());
                 deathSfx.start();
                 player.setDeathAni();
             }
         } else if (player.getScore() > 0) {
             //do death animation, restart after animation ends
             player.updateDeath();
-
-            bg = new Background(R.drawable.optionmenu, getResources());
-
-            enemies.clear();
-            blocks.clear();
-            sparks.clear();
-
 
             for (int i=0;i<enemies.size();i++) {
                 enemies.get(i).updateOnlyAnimation();

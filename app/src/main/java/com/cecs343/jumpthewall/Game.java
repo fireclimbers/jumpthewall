@@ -44,5 +44,10 @@ public class Game extends AppCompatActivity {
 
     }
 
+    public void closeActivity() {
+        finish();
+        //System.exit(0);
+    }
+
 
 }

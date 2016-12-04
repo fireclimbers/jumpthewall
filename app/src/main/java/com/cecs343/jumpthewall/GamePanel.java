@@ -82,28 +82,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         setFocusable(true);
     }
 
-    /*
-    public void PlaySong()
-    {
-        if(randsong == 0)
-        {
-            mySong = MediaPlayer.create(this.getContext(),R.raw.song1);
-        }
-
-        if(randsong == 1)
-        {
-            mySong = MediaPlayer.create(this.getContext(),R.raw.song2);
-        }
-
-        if(randsong == 2)
-        {
-            mySong = MediaPlayer.create(this.getContext(),R.raw.song3);
-        }
-
-        mySong.start();
-    }
-    */
-
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height){}
 
@@ -124,28 +102,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(SurfaceHolder holder){
-
-        //pick background based on randomly generated number
-        /*
-        if(randbg == 0)
-        {
-            bg = new Background(R.drawable.newbg1, getResources());
-        }
-
-        if(randbg == 1)
-        {
-            bg = new Background(R.drawable.newbg2, getResources());
-        }
-
-        if(randbg == 2)
-        {
-            bg = new Background(R.drawable.newbg3, getResources());
-        }
-
-        if(randbg == 3)
-        {
-            bg = new Background(R.drawable.newbg4, getResources());
-        }*/
 
         bg = new Background(R.drawable.newbg3, getResources());
 

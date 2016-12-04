@@ -504,7 +504,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
             for(Enemy e : enemies) {
                 e.draw(canvas);
-                canvas.drawRect(e.getRect(), p);
+                //canvas.drawRect(e.getRect(), p);
             }
 
             for(Spark s : sparks) {

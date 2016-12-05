@@ -39,6 +39,7 @@ public class Menu extends AppCompatActivity{
         startActivity(new Intent(this,Game.class));
     }
     public void optionMenu(View view) { startActivity(new Intent(this, pop.class));}
+    public void openHelp(View view) { startActivity(new Intent(this, helpPopUp.class)); }
 
     public void closeActivity(View view) {
         finish();

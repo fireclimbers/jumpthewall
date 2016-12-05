@@ -35,6 +35,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     public static int gameHeight = 448;
     public static int mapPart;
     private Background bg;
+    private GUI gui;
     private Player player;
     private MapTrigger mapTrigger;
     private ArrayList<Enemy> enemies;
@@ -106,6 +107,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     public void surfaceCreated(SurfaceHolder holder){
 
         bg = new Background(R.drawable.newbg3, getResources());
+        gui = new GUI(getResources());
 
         //where all the graphics are created for the first time
         player = new Player(64,256,64,112,getResources());
@@ -171,6 +173,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     public void newGame() {
         //player.resetScore();
         bg = new Background(R.drawable.newbg3, getResources());
+        gui = new GUI(getResources());
         enemies.clear();
         blocks.clear();
         sparks.clear();
@@ -357,7 +360,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             }
 
             if (!player.getPlaying() && player.getScore() > 0) {
-                bg = new Background(R.drawable.optionmenu, getResources());
+                //bg = new Background(R.drawable.optionmenu, getResources());
                 deathSfx.start();
                 player.setDeathAni();
             }
@@ -463,6 +466,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
             for(Spark s : sparks) {
                 s.draw(canvas);
+            }
+
+            if (player.getPlaying()) {
+                gui.draw(canvas);
+            } else if (player.getScore() == 0){
+                gui.drawStart(canvas);
+            } else {
+                gui.drawRetry(canvas);
             }
 
             canvas.restoreToCount(savedState);

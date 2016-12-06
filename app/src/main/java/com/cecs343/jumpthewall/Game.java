@@ -41,7 +41,7 @@ public class Game extends AppCompatActivity {
         mySong3 = MediaPlayer.create(this,R.raw.song3);
 
         mySong2.start();
-
+        mySong2.setLooping(true);
     }
 
     public void closeActivity() {
